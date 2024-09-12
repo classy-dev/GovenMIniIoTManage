@@ -126,12 +126,7 @@ export default function Home() {
 
   return (
     <>
-      <Seo
-        title="GOVEN MINI"
-        description="Join GOPIZZA in cheering for the FIFA World Cup 2026 Qualifiers! Support the exciting match between Singapore and Korea on June 6th with exclusive discounts. Find a nearby GOPIZZA store and enjoy delicious pizza deals. Get your coupon now!"
-        image="/og-image.png"
-        url="https://promotion.gopizza.sg"
-      />
+      <Seo title="GOVEN MINI" description="" image="" url="" />
       <DashboardWrapper className="max-w-[64rem] mx-auto text-center uppercase font-sans  px-[1.6rem] flex flex-col gap-[0.8rem]">
         <Card className="relative">
           <div className="total-count">

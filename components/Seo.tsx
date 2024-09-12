@@ -1,4 +1,4 @@
-import Head from "next/head";
+import Head from 'next/head';
 
 const Seo = ({
   title,
@@ -27,7 +27,7 @@ const Seo = ({
       <meta name="twitter:image" content={image} />
       <meta name="twitter:url" content={url} />
       {/** 필요에 따라 변경 */}
-      {JSON.stringify({
+      {/* {JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Event",
         name: "Cheer for the World Cup Qualifiers with GOPIZZA!",
@@ -60,7 +60,7 @@ const Seo = ({
             "Korea National Football Team",
           ],
         },
-      })}
+      })} */}
       {children}
     </Head>
   );
