@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { localPoint } from '@visx/event';
 import { LinearGradient } from '@visx/gradient';
 import styled from '@emotion/styled';
+import ResponsiveContainer from './ResponsiveContainer';
 
 interface Props {
   className?: string;
@@ -136,8 +137,16 @@ export default withTooltip<Props, ChartData>(
       });
     };
 
+    if (width < 10)
+      return (
+        <ResponsiveContainer ref={parentRef} className={className ?? ''} />
+      );
+
     return (
-      <div ref={parentRef} className={`relative ${className ?? ''}`}>
+      <ResponsiveContainer
+        ref={parentRef}
+        className={`relative ${className ?? ''}`}
+      >
         {tooltipData && (
           <Tooltip
             key={Math.random()}
@@ -273,7 +282,7 @@ export default withTooltip<Props, ChartData>(
             )}
           </g>
         </svg>
-      </div>
+      </ResponsiveContainer>
     );
   }
 );

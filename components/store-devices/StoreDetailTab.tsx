@@ -45,6 +45,7 @@ const StoreDetailTabs = () => {
     <TabWrapper>
       {tabPaths.map(tab => (
         <Link
+          key={tab.path}
           href={`${tab.path}?${search}`}
           className={`tab-item ${tab.path === pathname ? 'active' : ''}`}
         >

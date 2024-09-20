@@ -18,17 +18,29 @@ const HeaderWrapper = styled.header`
   background: #fff;
   margin: 0 auto;
   z-index: 10;
+
   h2 {
     font-size: 1.6rem;
     line-height: 1;
+  }
+
+  .save {
+    padding: 0.8rem 1.1rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    font-weight: bold;
+    background: #e3e3e3;
+    border-radius: 0.6rem;
   }
 `;
 
 interface StoreLayoutProps {
   title?: string;
   passQuery?: boolean;
+  useFormSave?: boolean;
   onBack?: () => void;
   onSearch?: () => void;
+  onSave?: () => void;
 }
 
 const ContentWrapper = styled.main`
@@ -38,12 +50,16 @@ const ContentWrapper = styled.main`
 
 const Header = ({
   title,
+  useFormSave,
   onBackClick,
   onSearchClick,
+  onSaveClick,
 }: {
   title?: string;
+  useFormSave?: boolean;
   onBackClick?: () => void;
   onSearchClick?: () => void;
+  onSaveClick?: () => void;
 }) => {
   return (
     <HeaderWrapper>
@@ -55,21 +71,32 @@ const Header = ({
         <Back />
       </button>
       <h2>{title}</h2>
-      <button
-        className="search"
-        aria-label="검색"
-        onClick={() => onSearchClick?.()}
-      >
-        <Search />
-      </button>
+      {useFormSave ? (
+        <button className="save" onClick={onSaveClick}>
+          저장
+        </button>
+      ) : (
+        <button
+          className="search aria-hidden:invisible"
+          aria-label="검색"
+          aria-hidden="true"
+          onClick={() => onSearchClick?.()}
+        >
+          <Search />
+        </button>
+      )}
     </HeaderWrapper>
   );
 };
 
 const StoreLayout = ({
   title,
-  children,
+  useFormSave,
   passQuery,
+  onBack,
+  onSave,
+  onSearch,
+  children,
 }: React.PropsWithChildren<StoreLayoutProps>) => {
   const back = useBack();
 
@@ -77,8 +104,10 @@ const StoreLayout = ({
     <>
       <Header
         title={title}
-        onBackClick={() => back(passQuery)}
-        onSearchClick={() => {}}
+        useFormSave={!!onSave}
+        onBackClick={() => (onBack ? onBack() : back(passQuery))}
+        onSearchClick={onSearch}
+        onSaveClick={onSave}
       />
       <ContentWrapper>{children}</ContentWrapper>
     </>

@@ -15,7 +15,6 @@ const ArrowRight = (props: SVGProps<SVGSVGElement>) => (
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      transform="rotate(180deg)"
     />
   </svg>
 );

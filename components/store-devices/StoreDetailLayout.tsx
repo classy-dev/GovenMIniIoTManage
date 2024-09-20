@@ -68,7 +68,10 @@ const DetailWrapper = styled.div`
   }
 `;
 
-const StoreDetailLayout = ({ children }: React.PropsWithChildren) => {
+const StoreDetailLayout = ({
+  onSave,
+  children,
+}: React.PropsWithChildren<{ onSave?: () => void }>) => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
   const store = storeInfoList.find(
@@ -76,7 +79,7 @@ const StoreDetailLayout = ({ children }: React.PropsWithChildren) => {
   );
 
   return (
-    <StoreLayout title={store?.installed_store} passQuery>
+    <StoreLayout title={store?.installed_store} passQuery onSave={onSave}>
       <DetailWrapper>
         <StoreDetailTabs />
         {children}

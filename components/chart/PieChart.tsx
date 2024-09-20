@@ -1,23 +1,24 @@
-import React, { useMemo, useRef, useState } from "react";
-import Pie, { ProvidedProps, PieArcDatum } from "@visx/shape/lib/shapes/Pie";
-import { scaleOrdinal } from "@visx/scale";
-import { Group } from "@visx/group";
-import { GradientPinkBlue } from "@visx/gradient";
+import React, { useMemo, useRef, useState } from 'react';
+import Pie, { ProvidedProps, PieArcDatum } from '@visx/shape/lib/shapes/Pie';
+import { scaleOrdinal } from '@visx/scale';
+import { Group } from '@visx/group';
+import { GradientPinkBlue } from '@visx/gradient';
 
 import {
   animated,
   useTransition,
   interpolate,
   useSpring,
-} from "@react-spring/web";
-import { useParentSize } from "@visx/responsive";
+  to,
+} from '@react-spring/web';
+import { useParentSize } from '@visx/responsive';
 
 // accessor functions
-const names = ["on", "off"];
+const names = ['on', 'off'];
 // color scales
 const getColorSpace = scaleOrdinal({
   domain: names,
-  range: ["#FA4616", "rgba(255, 184, 165, 0.4)"],
+  range: ['#FA4616', 'rgba(255, 184, 165, 0.4)'],
 });
 
 const defaultMargin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -48,11 +49,11 @@ export default function PieChart({
   const radius = Math.min(innerWidth, innerHeight) / 2;
   const centerY = innerHeight / 2;
   const centerX = innerWidth / 2;
-  const donutThickness = 8;
+  const donutThickness = 10;
 
   // Calculate progress percentage
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
-  const onValue = data.find((item) => item.label === "on")?.value || 0;
+  const onValue = data.find(item => item.label === 'on')?.value || 0;
   const progressPercentage = Math.round((onValue / totalValue) * 100);
 
   // Animate the progress percentage
@@ -63,27 +64,26 @@ export default function PieChart({
   });
 
   return (
-    <div ref={parentRef} className={className ?? ""}>
+    <div ref={parentRef} className={className ?? ''}>
       <svg width={width} height={height}>
         <GradientPinkBlue id="visx-pie-gradient" />
-
         <Group top={centerY + margin.top} left={centerX + margin.left}>
           <Pie
             data={data}
             outerRadius={radius}
             innerRadius={radius - donutThickness}
-            pieValue={(data) => data.value}
+            pieValue={data => data.value}
             padAngle={0.005}
             cornerRadius={8}
-            pieSort={(a, b) => (a.label === "on" ? 1 : 0)}
+            pieSort={(a, b) => (a.label === 'on' ? 1 : 0)}
           >
-            {(pie) => (
+            {pie => (
               <AnimatedPie<(typeof data)[0]>
                 {...pie}
                 animate={animate}
-                getKey={(arc) => arc.data.label}
+                getKey={arc => arc.data.label}
                 onClickDatum={({ data: { label } }) => {}}
-                getColor={(arc) => getColorSpace(arc.data.label)}
+                getColor={arc => getColorSpace(arc.data.label)}
               />
             )}
           </Pie>
@@ -91,18 +91,24 @@ export default function PieChart({
             fill="#FA4616"
             x={0}
             y={0}
-            dy=".5em"
+            className=""
             textAnchor="middle"
+            fontWeight="bold"
             pointerEvents="none"
           >
             <animated.tspan
-              fontSize={24}
-              fontWeight="bold"
-              textAnchor={"middle"}
+              className="text-[2.4rem] md:text-[4.2rem]"
+              alignmentBaseline="middle"
+              textAnchor={'middle'}
             >
-              {number.to((n) => `${n.toFixed(0)}`)}
+              {number.to(n => `${n.toFixed(0)}`)}
             </animated.tspan>
-            <tspan fontSize={14} dx={3} dy={0}>
+            <tspan
+              className="text-[1.4rem] md:text-[1.6rem]"
+              dx="0.1em"
+              dy="1em"
+              alignmentBaseline="baseline"
+            >
               %
             </tspan>
           </text>
@@ -158,14 +164,12 @@ function AnimatedPie<Datum>({
       <g key={key}>
         <animated.path
           // compute interpolated path d attribute from intermediate angle values
-          d={interpolate(
-            [props.startAngle, props.endAngle],
-            (startAngle, endAngle) =>
-              path({
-                ...arc,
-                startAngle,
-                endAngle,
-              })
+          d={to([props.startAngle, props.endAngle], (startAngle, endAngle) =>
+            path({
+              ...arc,
+              startAngle,
+              endAngle,
+            })
           )}
           fill={getColor(arc)}
           onClick={() => onClickDatum(arc)}

@@ -81,8 +81,8 @@ const History = () => {
         </button>
       </div>
       <ul className="content">
-        {data.oven_operation_history.map(history => (
-          <li>
+        {data.oven_operation_history.map((history, i) => (
+          <li key={i}>
             <time>{history.time}</time>
             <span>{history.action}</span>
           </li>

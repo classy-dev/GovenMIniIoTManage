@@ -7,10 +7,12 @@ import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import { ReactNode, useCallback, useMemo } from 'react';
 
-const LayoutWrapper = styled.div``;
+const LayoutWrapper = styled.div`
+  max-width: 102.4rem;
+`;
 
 const Layout = ({ children }: React.PropsWithChildren) => (
-  <LayoutWrapper className="max-w-[64rem] mx-auto text-center font-sans bg-white min-h-[100vh]">
+  <LayoutWrapper className="mx-auto text-center font-sans bg-white min-h-[100vh]">
     <Navigation />
     {children}
   </LayoutWrapper>

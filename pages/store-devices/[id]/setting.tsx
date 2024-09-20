@@ -1,6 +1,8 @@
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
+import { formRequestSubmit } from '@/util/form';
 import styled from '@emotion/styled';
-import { ReactElement } from 'react';
+import { ReactElement, useRef } from 'react';
+import { useForm } from 'react-hook-form';
 
 const SettingWrapper = styled.div`
   .status {
@@ -64,67 +66,76 @@ const SettingWrapper = styled.div`
 `;
 
 const Setting = () => {
-  return (
-    <SettingWrapper>
-      <div className="status on">
-        <dl>
-          <dt>전원상태</dt>
-          <dd>ON</dd>
-        </dl>
-        <dl>
-          <dt>모듈설치</dt>
-          <dd>완료</dd>
-        </dl>
-      </div>
+  const formRef = useRef<HTMLFormElement>(null);
 
-      <form>
-        <div className="field">
-          <span className="label">예열 온도 설정</span>
-          <div className="input-wrapper">
-            <input type="text" value={'4:30'} />
-            <span className="unit">℃</span>
-          </div>
+  const { handleSubmit } = useForm<any>({});
+
+  return (
+    <StoreDetailLayout onSave={() => formRequestSubmit(formRef.current)}>
+      <SettingWrapper>
+        <div className="status on">
+          <dl>
+            <dt>전원상태</dt>
+            <dd>ON</dd>
+          </dl>
+          <dl>
+            <dt>모듈설치</dt>
+            <dd>완료</dd>
+          </dl>
         </div>
-        <div className="field">
-          <span className="flex-none w-full mb-[1.6rem]">조리 온도 01</span>
-          <div className="input-wrapper">
-            <input type="text" value={230} />
-            <span className="unit">℃</span>
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit(
+            () => console.log('valid'),
+            () => console.error('invalid')
+          )}
+        >
+          <div className="field">
+            <span className="label">예열 온도 설정</span>
+            <div className="input-wrapper">
+              <input type="text" value={'4:30'} />
+              <span className="unit">℃</span>
+            </div>
           </div>
-          <div className="input-wrapper">
-            <input type="text" value={'4:30'} />
-            <span className="unit">T</span>
+          <div className="field">
+            <span className="flex-none w-full mb-[1.6rem]">조리 온도 01</span>
+            <div className="input-wrapper">
+              <input type="text" value={230} />
+              <span className="unit">℃</span>
+            </div>
+            <div className="input-wrapper">
+              <input type="text" value={'4:30'} />
+              <span className="unit">T</span>
+            </div>
           </div>
-        </div>
-        <div className="field">
-          <span className="flex-none w-full mb-[1.6rem]">조리 온도 02</span>
-          <div className="input-wrapper">
-            <input type="text" value={230} />
-            <span className="unit">℃</span>
+          <div className="field">
+            <span className="flex-none w-full mb-[1.6rem]">조리 온도 02</span>
+            <div className="input-wrapper">
+              <input type="text" value={230} />
+              <span className="unit">℃</span>
+            </div>
+            <div className="input-wrapper">
+              <input type="text" value={'4:30'} />
+              <span className="unit">T</span>
+            </div>
           </div>
-          <div className="input-wrapper">
-            <input type="text" value={'4:30'} />
-            <span className="unit">T</span>
+          <div className="field">
+            <span className="flex-none w-full mb-[1.6rem]">조리 온도 03</span>
+            <div className="input-wrapper">
+              <input type="text" value={230} />
+              <span className="unit">℃</span>
+            </div>
+            <div className="input-wrapper">
+              <input type="text" value={'4:30'} />
+              <span className="unit">T</span>
+            </div>
           </div>
-        </div>
-        <div className="field">
-          <span className="flex-none w-full mb-[1.6rem]">조리 온도 03</span>
-          <div className="input-wrapper">
-            <input type="text" value={230} />
-            <span className="unit">℃</span>
-          </div>
-          <div className="input-wrapper">
-            <input type="text" value={'4:30'} />
-            <span className="unit">T</span>
-          </div>
-        </div>
-      </form>
-    </SettingWrapper>
+        </form>
+      </SettingWrapper>
+    </StoreDetailLayout>
   );
 };
 
-Setting.getLayout = (page: ReactElement) => (
-  <StoreDetailLayout>{page}</StoreDetailLayout>
-);
+Setting.getLayout = (page: ReactElement) => page;
 
 export default Setting;

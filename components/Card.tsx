@@ -21,8 +21,9 @@ const CardWrapper = styled.div`
   .title {
     font-size: 1.4rem;
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.15;
     margin-bottom: 1.6rem;
+    text-align: left;
   }
 
   .sub {
