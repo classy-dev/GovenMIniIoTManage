@@ -4,13 +4,7 @@ import { scaleOrdinal } from '@visx/scale';
 import { Group } from '@visx/group';
 import { GradientPinkBlue } from '@visx/gradient';
 
-import {
-  animated,
-  useTransition,
-  interpolate,
-  useSpring,
-  to,
-} from '@react-spring/web';
+import { animated, useTransition, useSpring, to } from '@react-spring/web';
 import { useParentSize } from '@visx/responsive';
 
 // accessor functions
