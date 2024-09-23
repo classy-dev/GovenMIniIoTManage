@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { useParentSize } from '@visx/responsive';
-import { scaleBand, scaleLinear, scalePoint, scaleTime } from '@visx/scale';
+import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
 import { AreaClosed, LinePath, Bar } from '@visx/shape';
 import { withTooltip, Tooltip, TooltipWithBounds } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
@@ -69,10 +69,7 @@ export default withTooltip<Props, ChartData>(
     const { parentRef, width, height } = useParentSize();
 
     // Sample the data
-    const sampledData = useMemo(
-      () => data.filter((v, i) => i % 60 === 0),
-      [data]
-    );
+    const sampledData = useMemo(() => data, [data]);
 
     // bounds
     const innerWidth = width - margin.left - margin.right;
@@ -106,7 +103,7 @@ export default withTooltip<Props, ChartData>(
       () =>
         scaleLinear({
           range: [innerHeight, 0],
-          domain: [0, 300],
+          domain: [0, max(sampledData, getTemperature) || 0],
           nice: true,
         }),
       [innerHeight, sampledData]

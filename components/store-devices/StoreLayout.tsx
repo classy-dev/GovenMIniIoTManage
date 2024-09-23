@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from '@emotion/styled';
 import Back from '@/components/icons/Back';
 import Search from '@/components/icons/Search';
@@ -20,6 +21,11 @@ const HeaderWrapper = styled.header`
   z-index: 10;
 
   h2 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: inherit;
     font-size: 1.6rem;
     line-height: 1;
   }
@@ -32,12 +38,17 @@ const HeaderWrapper = styled.header`
     background: #e3e3e3;
     border-radius: 0.6rem;
   }
+
+  .right {
+    display: inline-flex;
+    gap: 0.4rem;
+  }
 `;
 
 interface StoreLayoutProps {
   title?: string;
   passQuery?: boolean;
-  useFormSave?: boolean;
+  rightContent?: React.ReactNode;
   onBack?: () => void;
   onSearch?: () => void;
   onSave?: () => void;
@@ -50,16 +61,12 @@ const ContentWrapper = styled.main`
 
 const Header = ({
   title,
-  useFormSave,
+  right,
   onBackClick,
-  onSearchClick,
-  onSaveClick,
 }: {
   title?: string;
-  useFormSave?: boolean;
+  right?: React.ReactNode;
   onBackClick?: () => void;
-  onSearchClick?: () => void;
-  onSaveClick?: () => void;
 }) => {
   return (
     <HeaderWrapper>
@@ -71,28 +78,15 @@ const Header = ({
         <Back />
       </button>
       <h2>{title}</h2>
-      {useFormSave ? (
-        <button className="save" onClick={onSaveClick}>
-          저장
-        </button>
-      ) : (
-        <button
-          className="search aria-hidden:invisible"
-          aria-label="검색"
-          aria-hidden="true"
-          onClick={() => onSearchClick?.()}
-        >
-          <Search />
-        </button>
-      )}
+      <div className="right">{right}</div>
     </HeaderWrapper>
   );
 };
 
 const StoreLayout = ({
   title,
-  useFormSave,
   passQuery,
+  rightContent,
   onBack,
   onSave,
   onSearch,
@@ -100,14 +94,35 @@ const StoreLayout = ({
 }: React.PropsWithChildren<StoreLayoutProps>) => {
   const back = useBack();
 
+  const rightNode = useMemo(
+    () =>
+      rightContent ? (
+        rightContent
+      ) : onSave ? (
+        <button className="save" onClick={onSave}>
+          저장
+        </button>
+      ) : onSearch ? (
+        <button
+          className="search aria-hidden:invisible"
+          aria-label="검색"
+          aria-hidden="true"
+          onClick={() => onSearch()}
+        >
+          <Search />
+        </button>
+      ) : (
+        <></>
+      ),
+    [rightContent, onSave, onSearch]
+  );
+
   return (
     <>
       <Header
         title={title}
-        useFormSave={!!onSave}
         onBackClick={() => (onBack ? onBack() : back(passQuery))}
-        onSearchClick={onSearch}
-        onSaveClick={onSave}
+        right={rightNode}
       />
       <ContentWrapper>{children}</ContentWrapper>
     </>

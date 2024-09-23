@@ -1,6 +1,8 @@
 import { StoreInfomation } from '@/data/storeInfo';
 import { mq } from '@/styles/responsive';
 import styled from '@emotion/styled';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 const StoreItemWrapper = styled.div`
   position: relative;
@@ -130,8 +132,24 @@ interface StoreListItemProps {
   onClick: (info: StoreInfomation) => void;
 }
 
+const currentTime = dayjs();
+
 const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
   const disabled = status === 'none';
+  const [time, setTime] = useState(0);
+  const onTime = dayjs(info.on_time);
+  const diff = info.on_time ? currentTime.diff(onTime, 'second') : null;
+
+  useEffect(() => {
+    if (info.power_status !== 2) return;
+
+    setTime(diff ?? 0);
+    const timer = setInterval(() => {
+      setTime(prev => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [diff, info.power_status]);
 
   return (
     <StoreItemWrapper
@@ -145,7 +163,12 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
       <div className="status">
         <span className="badge">{status}</span>
         <time>
-          {status === 'on' ? '04:30:00' : status === 'off' ? '--:--:--' : ''}
+          {status === 'on'
+            ? dayjs.unix(time).utc().format('HH:mm:ss')
+            : status === 'off'
+            ? '--:--:--'
+            : ''}
+          <br />
         </time>
       </div>
       <div className="info">

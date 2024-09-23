@@ -2,11 +2,31 @@ import { StoreInfomation } from '@/data/storeInfo';
 import { mq } from '@/styles/responsive';
 import styled from '@emotion/styled';
 import StoreListItem from './StoreListItem';
+import Warning from '@/components/icons/Warning';
 
 const StoreListWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
+
+  .empty {
+    flex: none;
+    display: inline-flex;
+    width: 100%;
+    flex-direction: column;
+    align-self: center;
+
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    min-height: 40vmin;
+    h3 {
+      font-size: 2.4rem;
+    }
+    svg {
+      color: #ffd34d;
+    }
+  }
 `;
 
 interface StoreListProps {
@@ -15,10 +35,20 @@ interface StoreListProps {
 }
 
 const StoreList = ({ data, onClickStore }: StoreListProps) => {
+  if (!data?.length)
+    return (
+      <StoreListWrapper>
+        <div className="empty">
+          <Warning />
+          <h3>조회된 매장이 없습니다.</h3>
+        </div>
+      </StoreListWrapper>
+    );
+
   return (
     <StoreListWrapper>
       {data?.map((store, i) => {
-        const status = ['on', 'off', 'none'].at(i % 3);
+        const status = ['none', 'off', 'on'].at(store.power_status);
 
         return (
           <StoreListItem

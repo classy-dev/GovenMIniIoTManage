@@ -18,7 +18,7 @@ type mockData = {
 
 const AnimatedFire = styled(Fire)`
   animation: ${flicker} 1.5s infinite alternate;
-  transform-origin: center center; /* 애니메이션 원점 설정 */
+  transform-origin: center bottom; /* 애니메이션 원점 설정 */
 `;
 
 const TemperatureWrapper = styled.div`
@@ -177,7 +177,7 @@ const StoreDetail = () => {
     <TemperatureWrapper>
       <div className={`temperature-info ${!isON ? 'off' : ''}`}>
         <div className="label">
-          <span>현재 온도 상태</span>
+          <span>현재 전원 상태</span>
           <span className="badge">{!isON ? 'OFF' : 'ON'}</span>
         </div>
         <div className="current">
