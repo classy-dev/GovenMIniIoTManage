@@ -5,11 +5,23 @@ import { AppPropsWithLayout } from 'next';
 
 import type { AppProps } from 'next/app';
 import Script from 'next/script';
+import React from 'react';
 import { ReactNode, useCallback, useMemo } from 'react';
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 
 const LayoutWrapper = styled.div`
   max-width: 102.4rem;
 `;
+
+import utc from 'dayjs/plugin/utc';
+import dayjs from 'dayjs';
+
+dayjs.extend(utc);
 
 const Layout = ({ children }: React.PropsWithChildren) => (
   <LayoutWrapper className="mx-auto text-center font-sans bg-white min-h-[100vh]">
@@ -19,6 +31,22 @@ const Layout = ({ children }: React.PropsWithChildren) => (
 );
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const { current: queryClient } = React.useRef(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          refetchOnWindowFocus: false,
+          retry: true,
+        },
+      },
+      queryCache: new QueryCache({
+        // onError: errorHandler,
+      }),
+      mutationCache: new MutationCache({
+        // onError: errorHandler,
+      }),
+    })
+  );
   const renderPage = useMemo(
     () =>
       Component.getLayout ? (
@@ -77,7 +105,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           </Script> */}
         </>
       )}
-      {renderPage}
+      <QueryClientProvider client={queryClient}>
+        {renderPage}
+      </QueryClientProvider>
     </>
   );
 }

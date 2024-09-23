@@ -102,7 +102,7 @@ const DashboardWrapper = styled.main`
   }
 `;
 
-const baseDate = dayjs().hour(-1);
+const baseDate = dayjs();
 
 export default function HomePage() {
   const router = useRouter();

@@ -2,7 +2,7 @@ import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { SVGProps } from 'react';
 
-const flicker = keyframes`
+export const flicker = keyframes`
      0% {
          transform: scale(1) translateY(0);
          d: path("M14.4527 8.48679L12.1842 3.93896L11.4471 4.74309C7.30945 9.25693 6 11.9609 6 14.2499C6 17.422 8.73452 19.909 12 19.909C15.2655 19.909 18 17.422 18 14.2499C18 13.3179 17.6746 12.3124 17.2381 11.3658C16.796 10.4069 16.2091 9.44335 15.62 8.57788L15.1065 7.82342L14.4527 8.48679Z");

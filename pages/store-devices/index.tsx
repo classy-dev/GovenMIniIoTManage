@@ -1,3 +1,4 @@
+import Seo from '@/components/Seo';
 import StoreLayout from '@/components/store-devices/StoreLayout';
 import StoreList from '@/components/store-devices/StoreList';
 import StoreStatus from '@/components/store-devices/StoreStatus';
@@ -42,17 +43,25 @@ const StoreDevices = () => {
   };
 
   return (
-    <StoreDeviceListWrapper>
-      <StoreStatus selectedValue={status} onChange={updateStatus} />
-      <StoreList
-        data={storeInfoList}
-        onClickStore={store =>
-          router.push(
-            '/store-devices/' + store.machinery_minigoven_idx + `?${search}`
-          )
-        }
+    <>
+      <Seo
+        title="기기 목록 | GOVEN MINI"
+        description="고븐 미니 기기 목록"
+        image=""
+        url=""
       />
-    </StoreDeviceListWrapper>
+      <StoreDeviceListWrapper>
+        <StoreStatus selectedValue={status} onChange={updateStatus} />
+        <StoreList
+          data={storeInfoList}
+          onClickStore={store =>
+            router.push(
+              '/store-devices/' + store.machinery_minigoven_idx + `?${search}`
+            )
+          }
+        />
+      </StoreDeviceListWrapper>
+    </>
   );
 };
 

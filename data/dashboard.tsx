@@ -12,7 +12,7 @@ const baseDate = dayjs();
 const getWeekDateWithValues = (values: number[]) =>
   values
     .map((value, i) => ({
-      date: baseDate.add(i * -1 - 1, 'day').toDate(),
+      date: baseDate.add(i * -1, 'day').toDate(),
       value,
     }))
     .reverse();

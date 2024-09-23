@@ -24,7 +24,7 @@ export const accentColorDark = '#171C8F';
 const today = dayjs(Date.now());
 
 const mockup = Array.from({ length: 7 }, (v, i) => ({
-  date: today.add(i, 'day').toDate(),
+  date: today.add(-i, 'day').toDate(),
   value: i === 0 ? 0 : getRandomInRange(100, 300),
 })).reverse();
 
