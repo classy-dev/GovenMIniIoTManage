@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { useParentSize } from '@visx/responsive';
 import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
@@ -130,6 +130,7 @@ export default withTooltip<Props, ChartData>(
     date,
   }: Props & WithTooltipProvidedProps<ChartData>) => {
     const { parentRef, width, height } = useParentSize();
+    const [initialTemperature, setInitialTemperature] = useState(-1);
 
     // Round current time to nearest 5 minutes
     const currentDateTime = roundToNearestFiveMinutes(
@@ -142,37 +143,36 @@ export default withTooltip<Props, ChartData>(
       const filteredData = data.filter(
         d => new Date(`${date}T${d.time}`) <= currentDateTime
       );
-      return [
-        ...filteredData,
-        {
-          time: nextDateTime.toTimeString().slice(0, 8),
-          display_time: currentTime,
-          temperature: currentTemperature,
-        },
-      ];
-    }, [data, currentDateTime, currentTemperature, nextDateTime]);
+      return [...filteredData];
+    }, [data, currentDateTime]);
 
     // Calculate average temperature
     const averageTemperature = useMemo(
-      () => mean(extendedData, getTemperature) || 0,
-      [extendedData]
+      () => mean(data, getTemperature) || 0,
+      []
     );
 
     // Calculate temperature difference
     const calculateTempDifference = (temp: number) =>
-      Math.round(temp * (currentTemperature / averageTemperature));
+      Math.round(temp * (initialTemperature / averageTemperature));
 
     // Transform data to temperature differences
     const transformedData = useMemo(
-      () => [
-        ...extendedData.map((d, i) => ({
-          ...d,
-          tempDifference:
-            i === extendedData.length - 1
-              ? d.temperature
-              : calculateTempDifference(d.temperature),
-        })),
-      ],
+      () =>
+        extendedData.length === 0
+          ? []
+          : [
+              ...extendedData.map(d => ({
+                ...d,
+                tempDifference: calculateTempDifference(d.temperature),
+              })),
+              {
+                time: nextDateTime.toTimeString().slice(0, 8),
+                display_time: currentTime,
+                temperature: currentTemperature,
+                tempDifference: currentTemperature,
+              },
+            ],
       [extendedData, averageTemperature]
     );
 
@@ -183,10 +183,16 @@ export default withTooltip<Props, ChartData>(
     const safetooltipTop = Math.max(Math.min(tooltipTop, innerHeight), 0);
 
     // Calculate min and max temperature differences
-    // const minDiff = min(transformedData, d => d.tempDifference) || 0;
+
     const maxDiff = max(transformedData, d => d.tempDifference) || 0;
-    const yMin = 15;
+    const yMin = 20;
     const yMax = Math.max(maxDiff);
+
+    useEffect(() => {
+      if (!isNaN(currentTemperature) && initialTemperature === -1) {
+        setInitialTemperature(currentTemperature);
+      }
+    }, [currentTemperature, initialTemperature]);
 
     // scales
     const timeScale = useMemo(
@@ -236,7 +242,11 @@ export default withTooltip<Props, ChartData>(
       );
 
       const x0 = timeScale.invert(safeX - margin.left);
-      const index = bisectDate(extendedData, x0.toTimeString().slice(0, 8), 1);
+      const index = bisectDate(
+        transformedData,
+        x0.toTimeString().slice(0, 8),
+        1
+      );
       const d0 = transformedData[index - 1];
       const d1 = transformedData[index];
       let d = d0;
@@ -365,13 +375,7 @@ export default withTooltip<Props, ChartData>(
               onMouseMove={handleTooltip}
               onMouseLeave={() => hideTooltip()}
             />
-            <Line
-              from={{ x: 0, y: temperatureScale(0) }}
-              to={{ x: innerWidth, y: temperatureScale(0) }}
-              stroke="#B2B2B2"
-              strokeWidth={1}
-              strokeDasharray="4,4"
-            />
+
             {yMax >= 230 && (
               <Line
                 from={{

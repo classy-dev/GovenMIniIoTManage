@@ -220,7 +220,7 @@ const StoreDetail = () => {
         className="aspect-square md:aspect-video"
         date={mockup.date}
         data={mockup.data}
-        currentTemperature={parseInt(data?.iot_info.temp ?? '0')}
+        currentTemperature={parseInt(data?.iot_info.temp ?? '')}
         currentTime={currentTime}
       />
     </TemperatureWrapper>
