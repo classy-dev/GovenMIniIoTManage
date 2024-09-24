@@ -21,12 +21,36 @@ export const background2 = '#fff';
 export const accentColor = 'rgba(250, 70, 22, 0.3)';
 export const accentColorDark = '#171C8F';
 
-const today = dayjs(Date.now());
-
-const mockup = Array.from({ length: 7 }, (v, i) => ({
-  date: today.add(-i, 'day').toDate(),
-  value: i === 0 ? 0 : getRandomInRange(100, 300),
-})).reverse();
+const mockup = [
+  {
+    date: '2024-09-18T06:19:16.852Z',
+    value: 310,
+  },
+  {
+    date: '2024-09-19T06:19:16.852Z',
+    value: 200,
+  },
+  {
+    date: '2024-09-20T06:19:16.852Z',
+    value: 150,
+  },
+  {
+    date: '2024-09-21T06:19:16.852Z',
+    value: 182,
+  },
+  {
+    date: '2024-09-22T06:19:16.852Z',
+    value: 183,
+  },
+  {
+    date: '2024-09-23T06:19:16.852Z',
+    value: 244,
+  },
+  {
+    date: '2024-09-24T06:19:16.852Z',
+    value: 100,
+  },
+];
 
 type ChartData = (typeof mockup)[number];
 
@@ -63,10 +87,7 @@ export default ({
     () =>
       scaleLinear({
         range: [innerHeight, 0],
-        domain: [
-          min(mockup, getValue) || 0,
-          Math.max(max(mockup, getValue) ?? 0, 230),
-        ],
+        domain: [0, Math.max(max(mockup, getValue) ?? 0, 230)],
         nice: true,
       }),
     [margin.top, innerHeight]
