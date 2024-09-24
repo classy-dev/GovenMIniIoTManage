@@ -66,8 +66,8 @@ const AnimatedCircle = styled(Circle)`
 
 const WaveEffect = ({ cx, cy }: { cx: number; cy: number }) => (
   <g>
-    <circle cx={cx} cy={cy} r="6" fill="red" />
-    <circle cx={cx} cy={cy} r="6" fill="none" stroke="red" strokeWidth="2">
+    <circle cx={cx} cy={cy} r="6" fill="#FA4616" />
+    <circle cx={cx} cy={cy} r="6" fill="none" stroke="#FA4616" strokeWidth="2">
       <animate
         attributeName="r"
         from="6"
