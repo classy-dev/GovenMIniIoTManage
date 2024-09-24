@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { useParentSize } from '@visx/responsive';
 import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
-import { AreaClosed, LinePath, Bar } from '@visx/shape';
+import { AreaClosed, LinePath, Bar, Circle } from '@visx/shape';
 import { withTooltip, Tooltip, TooltipWithBounds } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
-import { max, extent, bisector, min } from '@visx/vendor/d3-array';
+import { max, extent, bisector, min, mean } from '@visx/vendor/d3-array';
 import { Line } from '@visx/shape';
 import dayjs from 'dayjs';
 import { localPoint } from '@visx/event';
@@ -21,7 +21,8 @@ interface Props {
     time: string;
     temperature: number;
   }[];
-  currentTemperature?: number;
+  currentTemperature: number;
+  currentTime: string;
 }
 
 const TooltipStyle = styled.div`
@@ -44,15 +45,74 @@ const TooltipStyle = styled.div`
   }
 `;
 
-type ChartData = Props['data'][number];
+const AnimatedCircle = styled(Circle)`
+  transform-origin: center center;
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  animation: pulse 2s infinite;
+`;
+
+const WaveEffect = ({ cx, cy }: { cx: number; cy: number }) => (
+  <g>
+    <circle cx={cx} cy={cy} r="6" fill="red" />
+    <circle cx={cx} cy={cy} r="6" fill="none" stroke="red" strokeWidth="2">
+      <animate
+        attributeName="r"
+        from="6"
+        to="15"
+        dur="1.5s"
+        begin="0s"
+        repeatCount="indefinite"
+      />
+      <animate
+        attributeName="opacity"
+        from="1"
+        to="0"
+        dur="1.5s"
+        begin="0s"
+        repeatCount="indefinite"
+      />
+    </circle>
+  </g>
+);
+
+type ChartData = Props['data'][number] & {
+  tempDifference?: number;
+  display_time?: string;
+};
 
 const getTemperature = (d: ChartData) => d.temperature;
+const getDiffTemperature = (d: ChartData) => d.tempDifference;
 const getTime = (d: ChartData) => d.time;
 const bisectDate = bisector<ChartData, string>(d => d.time).left;
 
-const sampleData = (data: ChartData[], sampleSize: number): ChartData[] => {
-  const step = Math.floor(data.length / sampleSize);
-  return data.filter((_, index) => index % step === 0);
+const roundToNearestFiveMinutes = (date: Date) => {
+  const minutes = 5 * Math.round(date.getMinutes() / 5);
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    date.getHours(),
+    minutes,
+    0
+  );
+};
+
+const getNextFiveMinutes = (date: Date) => {
+  const nextDate = new Date(date.getTime() + 5 * 60000); // Add 5 minutes
+  return roundToNearestFiveMinutes(nextDate);
 };
 
 export default withTooltip<Props, ChartData>(
@@ -65,57 +125,105 @@ export default withTooltip<Props, ChartData>(
     hideTooltip,
     margin = { top: 100, right: 10, bottom: 24, left: 30 },
     currentTemperature,
+    currentTime,
     data,
     date,
   }: Props & WithTooltipProvidedProps<ChartData>) => {
     const { parentRef, width, height } = useParentSize();
 
-    // Sample the data
-    const sampledData = useMemo(() => data, [data]);
+    // Round current time to nearest 5 minutes
+    const currentDateTime = roundToNearestFiveMinutes(
+      new Date(`${date}T${currentTime}`)
+    );
+    const nextDateTime = getNextFiveMinutes(currentDateTime);
+
+    // Filter data to only show up to the current time and add current temperature as next tick
+    const extendedData = useMemo(() => {
+      const filteredData = data.filter(
+        d => new Date(`${date}T${d.time}`) <= currentDateTime
+      );
+      return [
+        ...filteredData,
+        {
+          time: nextDateTime.toTimeString().slice(0, 8),
+          display_time: currentTime,
+          temperature: currentTemperature,
+        },
+      ];
+    }, [data, currentDateTime, currentTemperature, nextDateTime]);
+
+    // Calculate average temperature
+    const averageTemperature = useMemo(
+      () => mean(extendedData, getTemperature) || 0,
+      [extendedData]
+    );
+
+    // Calculate temperature difference
+    const calculateTempDifference = (temp: number) =>
+      Math.round(temp * (currentTemperature / averageTemperature));
+
+    // Transform data to temperature differences
+    const transformedData = useMemo(
+      () => [
+        ...extendedData.map((d, i) => ({
+          ...d,
+          tempDifference:
+            i === extendedData.length - 1
+              ? d.temperature
+              : calculateTempDifference(d.temperature),
+        })),
+      ],
+      [extendedData, averageTemperature]
+    );
 
     // bounds
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     const safetooltipLeft = Math.max(Math.min(tooltipLeft, innerWidth - 1), 1);
     const safetooltipTop = Math.max(Math.min(tooltipTop, innerHeight), 0);
-    const maxY = max(sampledData, getTemperature) || 0;
-    const minY = Math.min(min(sampledData, getTemperature) || 0);
 
-    const currentTime = useMemo(() => dayjs(), [currentTemperature]);
+    // Calculate min and max temperature differences
+    // const minDiff = min(transformedData, d => d.tempDifference) || 0;
+    const maxDiff = max(transformedData, d => d.tempDifference) || 0;
+    const yMin = 15;
+    const yMax = Math.max(maxDiff);
 
     // scales
     const timeScale = useMemo(
       () =>
         scaleTime({
           range: [0, innerWidth],
-          domain: extent(sampledData, d => new Date(`${date}T${d.time}`)) as [
+          domain: extent(data, d => new Date(`${date}T${d.time}`)) as [
             Date,
             Date
           ],
         }),
-      [innerWidth, sampledData, date]
+      [innerWidth, data, date, currentDateTime]
     );
 
     const axiosScale = useMemo(
       () =>
         scalePoint({
           range: [0, innerWidth],
-          domain: extent(sampledData, d => d.time) as [string, string],
+          domain: extent(data, d => d.time) as [string, string],
         }),
-      [innerWidth, sampleData]
+      [innerWidth, data]
     );
 
     const temperatureScale = useMemo(
       () =>
         scaleLinear({
           range: [innerHeight, 0],
-          domain: [minY, maxY],
+          domain: [yMin, yMax],
           nice: true,
         }),
-      [innerHeight, sampledData]
+      [innerHeight, yMin, yMax]
     );
 
-    const guideY = useMemo(() => temperatureScale(230), [temperatureScale]);
+    const guideY = useMemo(
+      () => temperatureScale(calculateTempDifference(230)),
+      [temperatureScale, calculateTempDifference]
+    );
 
     // tooltip handler
     const handleTooltip = (
@@ -128,19 +236,25 @@ export default withTooltip<Props, ChartData>(
       );
 
       const x0 = timeScale.invert(safeX - margin.left);
-      const index = bisectDate(sampledData, x0.toTimeString().slice(0, 8), 1);
-      const d0 = sampledData[index - 1];
-      const d1 = sampledData[index];
+      const index = bisectDate(extendedData, x0.toTimeString().slice(0, 8), 1);
+      const d0 = transformedData[index - 1];
+      const d1 = transformedData[index];
       let d = d0;
 
-      showTooltip({
-        tooltipData: d,
-        tooltipLeft: safeX,
-        tooltipTop: temperatureScale(getTemperature(d)),
-      });
+      if (d) {
+        showTooltip({
+          tooltipData: d,
+          tooltipLeft: margin.left + timeScale(new Date(`${date}T${d.time}`)),
+          tooltipTop: temperatureScale(
+            calculateTempDifference(getTemperature(d))
+          ),
+        });
+      } else {
+        hideTooltip();
+      }
     };
 
-    if (width < 10)
+    if (width < 10 || isNaN(currentTemperature) || !currentTime)
       return (
         <ResponsiveContainer ref={parentRef} className={className ?? ''} />
       );
@@ -166,12 +280,16 @@ export default withTooltip<Props, ChartData>(
           >
             <TooltipStyle>
               <time>
-                {dayjs(`${date} ${getTime(tooltipData)}`).format(
-                  'YYYY.MM.DD HH:mm'
-                )}
+                {dayjs(
+                  `${date} ${
+                    tooltipData.display_time
+                      ? tooltipData.display_time
+                      : getTime(tooltipData)
+                  }`
+                ).format('YYYY.MM.DD HH:mm')}
               </time>
               <span className="temperature">
-                {getTemperature(tooltipData)}
+                {getDiffTemperature(tooltipData)}
                 <span className="unit">°C</span>
               </span>
             </TooltipStyle>
@@ -211,7 +329,7 @@ export default withTooltip<Props, ChartData>(
               hideAxisLine
               hideTicks
               hideZero
-              tickValues={maxY >= 230 ? [230, maxY] : [maxY]}
+              tickValues={[yMax]}
               tickLabelProps={{
                 fill: '#C1C1C1',
                 fontSize: 12,
@@ -221,17 +339,17 @@ export default withTooltip<Props, ChartData>(
                 fontFamily: 'GmarketSans',
               }}
             />
-            <AreaClosed<ChartData>
-              data={sampledData}
-              x={d => timeScale(new Date(`${date}T${getTime(d)}`)) ?? 0}
-              y={d => temperatureScale(getTemperature(d)) ?? 0}
+            <AreaClosed<(typeof transformedData)[number]>
+              data={transformedData}
+              x={d => timeScale(new Date(`${date}T${d.time}`)) ?? 0}
+              y={d => temperatureScale(d.tempDifference) ?? 0}
               yScale={temperatureScale}
               fill="url(#area-gradient)"
             />
-            <LinePath<ChartData>
-              data={sampledData}
-              x={d => timeScale(new Date(`${date}T${getTime(d)}`)) ?? 0}
-              y={d => temperatureScale(getTemperature(d)) ?? 0}
+            <LinePath<(typeof transformedData)[number]>
+              data={transformedData}
+              x={d => timeScale(new Date(`${date}T${d.time}`)) ?? 0}
+              y={d => temperatureScale(d.tempDifference) ?? 0}
               stroke="#FA4616"
               strokeWidth={2}
             />
@@ -247,7 +365,14 @@ export default withTooltip<Props, ChartData>(
               onMouseMove={handleTooltip}
               onMouseLeave={() => hideTooltip()}
             />
-            {maxY >= 230 && (
+            <Line
+              from={{ x: 0, y: temperatureScale(0) }}
+              to={{ x: innerWidth, y: temperatureScale(0) }}
+              stroke="#B2B2B2"
+              strokeWidth={1}
+              strokeDasharray="4,4"
+            />
+            {yMax >= 230 && (
               <Line
                 from={{
                   x: 0,
@@ -284,6 +409,11 @@ export default withTooltip<Props, ChartData>(
                 />
               </g>
             )}
+
+            <WaveEffect
+              cx={timeScale(nextDateTime) ?? 0}
+              cy={temperatureScale(currentTemperature) ?? 0}
+            />
           </g>
         </svg>
       </ResponsiveContainer>

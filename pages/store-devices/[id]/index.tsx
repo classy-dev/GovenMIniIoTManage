@@ -155,6 +155,7 @@ const StoreDetail = () => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
   const [time, setTime] = useState(0);
+  const [currentTime, setCurrentTime] = useState('');
 
   const { data } = useDeviceInfo(id);
 
@@ -164,7 +165,10 @@ const StoreDetail = () => {
     if (!data || !isON) return;
     setTime(Number(data?.iot_info.power_running_time));
 
-    const timer = setInterval(() => setTime(val => val + 1), 1000);
+    const timer = setInterval(() => {
+      setTime(val => val + 1);
+      setCurrentTime(dayjs().format('HH:mm:ss'));
+    }, 1000);
 
     return () => clearInterval(timer);
   }, [data?.iot_info.temp]);
@@ -216,6 +220,8 @@ const StoreDetail = () => {
         className="aspect-square md:aspect-video"
         date={mockup.date}
         data={mockup.data}
+        currentTemperature={parseInt(data?.iot_info.temp ?? '0')}
+        currentTime={currentTime}
       />
     </TemperatureWrapper>
   );
