@@ -20,6 +20,7 @@ type IoTInfo = {
   temp: string;
   acting: string;
   power_running_time: string;
+  power_status: number;
 };
 
 type CookSetting = {

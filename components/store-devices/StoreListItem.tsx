@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 const StoreItemWrapper = styled.div`
   position: relative;
-  flex-basis: calc(33.33% - 0.5333333333rem);
+  flex-basis: 100%;
   display: flex;
   border-radius: 0.6rem;
   border: 1px solid #d4d4d4;
@@ -121,8 +121,8 @@ const StoreItemWrapper = styled.div`
     flex-basis: calc(50% - 0.4rem);
   }
 
-  ${mq.sm} {
-    flex-basis: 100%;
+  ${mq.lg} {
+    flex-basis: calc(33.33% - 0.5333333333rem);
   }
 `;
 

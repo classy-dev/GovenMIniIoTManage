@@ -4,12 +4,11 @@ import StoreLayout from '@/components/store-devices/StoreLayout';
 import StoreList from '@/components/store-devices/StoreList';
 import StoreStatus from '@/components/store-devices/StoreStatus';
 import { storeInfoList } from '@/data/storeInfo';
-import useBack from '@/hooks/useBack';
 import useChosungFilter from '@/hooks/useChosungFilter';
 import useSearchParamsFromRouter from '@/hooks/useSearchParamsFromRouter';
+import { mq } from '@/styles/responsive';
 import { throttleEvent } from '@/util/event';
 import styled from '@emotion/styled';
-import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { ReactElement, useEffect, useMemo, useState } from 'react';
 
@@ -22,13 +21,13 @@ const StoreDeviceListWrapper = styled.div`
 `;
 
 const SearchInputWrapper = styled.div`
+  display: none;
   position: relative;
   width: 100%;
   max-width: 32.8rem;
   height: 4.8rem;
   border: 1px solid #a0a0a0;
   border-radius: 0.6rem;
-  display: inline-flex;
 
   &:focus-within {
     border-color: #3f3f3f;
@@ -47,6 +46,10 @@ const SearchInputWrapper = styled.div`
     padding: 1.6rem 1.6rem 1.6rem 7rem;
     outline: none;
     border-radius: inherit;
+  }
+
+  ${mq.lg} {
+    display: inline-flex;
   }
 `;
 
@@ -105,15 +108,20 @@ const StoreDevices = () => {
     <StoreLayout
       title="매장별 리스트"
       rightContent={
-        <SearchInputWrapper>
-          <Search />
-          <input
-            type="text"
-            defaultValue={keyword}
-            placeholder="매장명을 입력해주세요."
-            onChange={onSearch}
-          />
-        </SearchInputWrapper>
+        <>
+          <SearchInputWrapper>
+            <Search />
+            <input
+              type="text"
+              defaultValue={keyword}
+              placeholder="매장명을 입력해주세요."
+              onChange={onSearch}
+            />
+          </SearchInputWrapper>
+          <button className="inline-flex lg:hidden">
+            <Search />
+          </button>
+        </>
       }
     >
       <Seo
@@ -123,7 +131,11 @@ const StoreDevices = () => {
         url=""
       />
       <StoreDeviceListWrapper>
-        <StoreStatus selectedValue={status} onChange={updateStatus} />
+        <StoreStatus
+          className="!hidden lg:!flex"
+          selectedValue={status}
+          onChange={updateStatus}
+        />
         <StoreList
           data={searchedList}
           onClickStore={store =>

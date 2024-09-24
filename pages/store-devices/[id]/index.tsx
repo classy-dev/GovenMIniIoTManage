@@ -156,13 +156,9 @@ const StoreDetail = () => {
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
   const [time, setTime] = useState(0);
 
-  const store = storeInfoList.find(
-    store => store.machinery_minigoven_idx === id
-  );
-
   const { data } = useDeviceInfo(id);
 
-  const isON = useMemo(() => Number(data?.iot_info.temp ?? 0) > 0, [data]);
+  const isON = useMemo(() => data?.iot_info.power_status === 2, [data]);
 
   useEffect(() => {
     if (!data || !isON) return;

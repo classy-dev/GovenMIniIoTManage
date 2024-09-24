@@ -5,7 +5,7 @@ import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
 import { AreaClosed, LinePath, Bar } from '@visx/shape';
 import { withTooltip, Tooltip, TooltipWithBounds } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
-import { max, extent, bisector } from '@visx/vendor/d3-array';
+import { max, extent, bisector, min } from '@visx/vendor/d3-array';
 import { Line } from '@visx/shape';
 import dayjs from 'dayjs';
 import { localPoint } from '@visx/event';
@@ -21,6 +21,7 @@ interface Props {
     time: string;
     temperature: number;
   }[];
+  currentTemperature?: number;
 }
 
 const TooltipStyle = styled.div`
@@ -63,6 +64,7 @@ export default withTooltip<Props, ChartData>(
     showTooltip,
     hideTooltip,
     margin = { top: 100, right: 10, bottom: 24, left: 30 },
+    currentTemperature,
     data,
     date,
   }: Props & WithTooltipProvidedProps<ChartData>) => {
@@ -76,6 +78,10 @@ export default withTooltip<Props, ChartData>(
     const innerHeight = height - margin.top - margin.bottom;
     const safetooltipLeft = Math.max(Math.min(tooltipLeft, innerWidth - 1), 1);
     const safetooltipTop = Math.max(Math.min(tooltipTop, innerHeight), 0);
+    const maxY = max(sampledData, getTemperature) || 0;
+    const minY = Math.min(min(sampledData, getTemperature) || 0);
+
+    const currentTime = useMemo(() => dayjs(), [currentTemperature]);
 
     // scales
     const timeScale = useMemo(
@@ -103,7 +109,7 @@ export default withTooltip<Props, ChartData>(
       () =>
         scaleLinear({
           range: [innerHeight, 0],
-          domain: [0, max(sampledData, getTemperature) || 0],
+          domain: [minY, maxY],
           nice: true,
         }),
       [innerHeight, sampledData]
@@ -196,9 +202,7 @@ export default withTooltip<Props, ChartData>(
               })}
               hideTicks
               tickLength={1}
-              tickFormat={v =>
-                dayjs(`${date} ${v}`).hour() === 0 ? '0' : '24H'
-              }
+              tickFormat={v => dayjs(`${date} ${v}`).format('HH') + 'H'}
             />
             <AxisLeft
               scale={temperatureScale}
@@ -207,7 +211,7 @@ export default withTooltip<Props, ChartData>(
               hideAxisLine
               hideTicks
               hideZero
-              tickValues={[230, 300]}
+              tickValues={maxY >= 230 ? [230, maxY] : [maxY]}
               tickLabelProps={{
                 fill: '#C1C1C1',
                 fontSize: 12,
@@ -243,20 +247,23 @@ export default withTooltip<Props, ChartData>(
               onMouseMove={handleTooltip}
               onMouseLeave={() => hideTooltip()}
             />
-            <Line
-              from={{
-                x: 0,
-                y: guideY,
-              }}
-              to={{
-                x: innerWidth,
-                y: guideY,
-              }}
-              stroke="#D08483"
-              strokeWidth={2}
-              strokeDasharray="4 4"
-              pointerEvents="none"
-            />
+            {maxY >= 230 && (
+              <Line
+                from={{
+                  x: 0,
+                  y: guideY,
+                }}
+                to={{
+                  x: innerWidth,
+                  y: guideY,
+                }}
+                stroke="#D08483"
+                strokeWidth={2}
+                strokeDasharray="4 4"
+                pointerEvents="none"
+              />
+            )}
+
             {tooltipData && (
               <g>
                 <Line

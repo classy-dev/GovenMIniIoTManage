@@ -9,7 +9,7 @@ const ResponsiveContainerWrapper = styled.div`
     display: block;
     content: '';
     width: 100%;
-    padding-bottom: 49.6%;
+    padding-bottom: 75%;
   }
 
   > svg {
@@ -22,7 +22,7 @@ const ResponsiveContainerWrapper = styled.div`
 
   ${mq.sm} {
     &::before {
-      padding-bottom: 75%;
+      padding-bottom: 49.6%;
     }
   }
 `;

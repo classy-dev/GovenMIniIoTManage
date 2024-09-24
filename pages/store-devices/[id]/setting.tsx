@@ -126,7 +126,7 @@ const Setting = () => {
   }, [data]);
 
   const isPowerOn = data?.power_status === 2;
-  const isInstalled = data?.power_status !== 0;
+  const isInstalled = true;
 
   return (
     <StoreDetailLayout

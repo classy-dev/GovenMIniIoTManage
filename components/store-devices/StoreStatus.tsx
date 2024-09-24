@@ -4,6 +4,7 @@ const StoreStatusWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 0.8rem;
+
   .filter {
     flex: none;
     display: inline-flex;
@@ -24,14 +25,15 @@ const StoreStatusWrapper = styled.div`
 
 interface Props {
   selectedValue?: string;
+  className?: string;
   onChange?: (val: string) => void;
 }
 
 const RADIO_VALUES = ['', 'ON', 'OFF'];
 
-const StoreStatus = ({ selectedValue = '', onChange }: Props) => {
+const StoreStatus = ({ selectedValue = '', onChange, className }: Props) => {
   return (
-    <StoreStatusWrapper>
+    <StoreStatusWrapper className={className ?? ''}>
       {RADIO_VALUES.map(val => (
         <label
           key={val}
