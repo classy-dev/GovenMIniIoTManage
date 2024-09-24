@@ -1,16 +1,23 @@
-import Search from '@/components/icons/Search';
 import Seo from '@/components/Seo';
+import StoreFilter, {
+  StoreFilterData,
+} from '@/components/store-devices/StoreFilter';
+// import StoreFilter from '@/components/store-devices/StoreFilter';
 import StoreLayout from '@/components/store-devices/StoreLayout';
 import StoreList from '@/components/store-devices/StoreList';
-import StoreStatus from '@/components/store-devices/StoreStatus';
 import { storeInfoList } from '@/data/storeInfo';
 import useChosungFilter from '@/hooks/useChosungFilter';
 import useSearchParamsFromRouter from '@/hooks/useSearchParamsFromRouter';
-import { mq } from '@/styles/responsive';
 import { throttleEvent } from '@/util/event';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useMemo, useState } from 'react';
+import {
+  ReactElement,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 const StoreDeviceListWrapper = styled.div`
   display: flex;
@@ -18,62 +25,34 @@ const StoreDeviceListWrapper = styled.div`
   justify-content: flex-start;
   gap: 1.6rem;
   padding: 1.6rem;
-`;
-
-const SearchInputWrapper = styled.div`
-  display: none;
-  position: relative;
-  width: 100%;
-  max-width: 32.8rem;
-  height: 4.8rem;
-  border: 1px solid #a0a0a0;
-  border-radius: 0.6rem;
-
-  &:focus-within {
-    border-color: #3f3f3f;
-  }
-
-  svg {
-    position: absolute;
-    left: 1.6rem;
-    top: 0;
-    height: 100%;
-    pointer-events: none;
-    cursor: pointer;
-  }
-
-  input {
-    padding: 1.6rem 1.6rem 1.6rem 7rem;
-    outline: none;
-    border-radius: inherit;
-  }
-
-  ${mq.lg} {
-    display: inline-flex;
-  }
+  padding-top: 6.2rem;
+  margin-top: 6.2rem;
 `;
 
 const StoreDevices = () => {
   const router = useRouter();
   const qs = useSearchParamsFromRouter();
 
-  const [status, setStatus] = useState<string | undefined>('');
-  const [keyword, setKeyword] = useState('');
+  const [filter, setFilter] = useState<StoreFilterData>({
+    keyword: '',
+  });
+
   const searchResult = useChosungFilter(
-    keyword,
+    filter.keyword,
     storeInfoList,
     store => store.installed_store
   );
+
   const searchedList = useMemo(
     () =>
       searchResult.filter(store =>
-        !status || status === 'none'
+        !filter.status || filter.status === 'none'
           ? true
-          : status === 'ON'
+          : filter.status === 'ON'
           ? store.power_status === 2
           : store.power_status === 1
       ),
-    [keyword, status]
+    [filter]
   );
 
   const search = useMemo(
@@ -82,47 +61,22 @@ const StoreDevices = () => {
   );
 
   useEffect(() => {
-    setStatus(qs.get('p')?.toUpperCase());
+    setFilter(filter => ({ ...filter, status: qs.get('p')?.toUpperCase() }));
   }, []);
 
-  const updateStatus = (val: string) => {
+  useEffect(() => {
     const params = new URLSearchParams(qs.toString());
-    params.set('p', val);
-    setStatus(val);
+    params.set('p', filter.status ?? '');
     router.replace(router.pathname + '?' + params.toString(), undefined, {
       shallow: true,
       scroll: false,
     });
-  };
-
-  const onSearch = useMemo(
-    () =>
-      throttleEvent<[React.ChangeEvent<HTMLInputElement>]>(
-        e => setKeyword(e.target.value),
-        500
-      ),
-    []
-  );
+  }, [filter.status]);
 
   return (
     <StoreLayout
       title="매장별 리스트"
-      rightContent={
-        <>
-          <SearchInputWrapper>
-            <Search />
-            <input
-              type="text"
-              defaultValue={keyword}
-              placeholder="매장명을 입력해주세요."
-              onChange={onSearch}
-            />
-          </SearchInputWrapper>
-          <button className="inline-flex lg:hidden">
-            <Search />
-          </button>
-        </>
-      }
+      rightContent={<StoreFilter filter={filter} onChangeFilter={setFilter} />}
     >
       <Seo
         title="기기 목록 | GOVEN MINI"
@@ -131,11 +85,6 @@ const StoreDevices = () => {
         url=""
       />
       <StoreDeviceListWrapper>
-        <StoreStatus
-          className="!hidden lg:!flex"
-          selectedValue={status}
-          onChange={updateStatus}
-        />
         <StoreList
           data={searchedList}
           onClickStore={store =>

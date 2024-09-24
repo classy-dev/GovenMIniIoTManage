@@ -159,19 +159,22 @@ const StoreDetail = () => {
 
   const { data } = useDeviceInfo(id);
 
-  const isON = useMemo(() => data?.iot_info.power_status === 2, [data]);
+  const isON = useMemo(
+    () => data?.iot_info.power_status === 2,
+    [data?.iot_info.power_status]
+  );
 
   useEffect(() => {
-    if (!data || !isON) return;
-    setTime(Number(data?.iot_info.power_running_time));
-
+    if (!data) return;
+    isON && setTime(Number(data?.iot_info.power_running_time));
+    setCurrentTime(dayjs().format('HH:mm:ss'));
     const timer = setInterval(() => {
-      setTime(val => val + 1);
+      isON && setTime(val => val + 1);
       setCurrentTime(dayjs().format('HH:mm:ss'));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [data?.iot_info.power_running_time]);
+  }, [data?.iot_info.power_running_time, isON]);
 
   return (
     <TemperatureWrapper>
