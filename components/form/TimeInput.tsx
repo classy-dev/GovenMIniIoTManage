@@ -110,7 +110,8 @@ const TimeInput: React.FC<TimeInputProps> = ({
     const mins = parseInt(minutes) || 0;
     const secs = parseInt(seconds) || 0;
     const totalSeconds = mins * 60 + secs;
-    onChange(totalSeconds);
+
+    onChange(totalSeconds >= 600 ? 599 : totalSeconds);
   };
 
   const handleBackspace = (e: React.KeyboardEvent<HTMLInputElement>) => {

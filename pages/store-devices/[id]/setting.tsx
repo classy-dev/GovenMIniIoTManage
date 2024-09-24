@@ -1,4 +1,5 @@
 import { updateDeviceSettingInfo } from '@/api/device';
+import ConfirmModal, { AlertModal } from '@/components/ConfirmModal';
 import TemperatureInput from '@/components/form/TemperatureInput';
 import TimeInput from '@/components/form/TimeInput';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
@@ -6,19 +7,16 @@ import useBack from '@/hooks/useBack';
 import useDeviceSettingInfo from '@/hooks/useDeviceSetting';
 import { formRequestSubmit } from '@/util/form';
 import styled from '@emotion/styled';
-import { register } from 'module';
 import { useRouter } from 'next/router';
-import {
-  ReactElement,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 const SettingWrapper = styled.div`
+  max-width: 76.8rem;
+  width: 100%;
+  margin: 0 auto;
+
   .status {
     display: flex;
     justify-content: flex-end;
@@ -56,14 +54,24 @@ const SettingWrapper = styled.div`
   }
 
   .input-wrapper {
+    flex: 1;
     display: inline-flex;
     align-items: flex-end;
+    flex-wrap: wrap;
 
     .unit {
       margin-left: 0.8rem;
       font-weight: bold;
       width: 1em;
       line-height: 1;
+    }
+  }
+
+  .input-wrapper + .input-wrapper {
+    justify-content: flex-end;
+
+    span {
+      text-align: right;
     }
   }
 
@@ -93,17 +101,23 @@ const Setting = () => {
   const back = useBack();
   const router = useRouter();
 
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
   const { data } = useDeviceSettingInfo(id);
 
   const { mutate } = useMutation(
     (data: FormData) => updateDeviceSettingInfo(id, data),
     {
-      onSuccess: () => back(true),
+      onSuccess: () => {
+        setShowConfirm(false);
+        setShowAlert(true);
+      },
     }
   );
 
-  const { handleSubmit, control, watch, reset } = useForm<FormData>({
+  const { handleSubmit, control, watch, reset, getValues } = useForm<FormData>({
     defaultValues: {
       pre_heat_temp: 0,
       cook_1: {
@@ -129,9 +143,7 @@ const Setting = () => {
   const isInstalled = true;
 
   return (
-    <StoreDetailLayout
-      onSave={isPowerOn ? () => formRequestSubmit(formRef.current) : undefined}
-    >
+    <StoreDetailLayout>
       <SettingWrapper className={!isPowerOn ? 'off' : ''}>
         <div className="status">
           <dl className={isPowerOn ? 'on' : ''}>
@@ -143,10 +155,13 @@ const Setting = () => {
             <dd>{isInstalled ? '완료' : ''}</dd>
           </dl>
         </div>
-        <form ref={formRef} onSubmit={handleSubmit(data => mutate(data))}>
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit(data => setShowConfirm(true))}
+        >
           <div className="field">
             <span className="label">예열 온도 설정</span>
-            <div className="input-wrapper">
+            <div className="input-wrapper justify-end">
               <TemperatureInput
                 control={control}
                 name="pre_heat_temp"
@@ -157,8 +172,8 @@ const Setting = () => {
             </div>
           </div>
           <div className="field">
-            <span className="flex-none w-full mb-[1.6rem]">조리 온도 01</span>
             <div className="input-wrapper">
+              <span className="flex-none w-full mb-[1.6rem]">조리 온도 01</span>
               <TemperatureInput
                 control={control}
                 name="cook_1.temp"
@@ -168,18 +183,18 @@ const Setting = () => {
               <span className="unit">℃</span>
             </div>
             <div className="input-wrapper">
+              <span className="flex-none w-full mb-[1.6rem]">조리 시간 01</span>
               <TimeInput
                 control={control}
                 name="cook_1.running_time"
                 defaultValue={0}
                 disabled={!isPowerOn}
               />
-              <span className="unit">T</span>
             </div>
           </div>
           <div className="field">
-            <span className="flex-none w-full mb-[1.6rem]">조리 온도 02</span>
             <div className="input-wrapper">
+              <span className="flex-none w-full mb-[1.6rem]">조리 온도 02</span>
               <TemperatureInput
                 name="cook_2.temp"
                 control={control}
@@ -189,18 +204,18 @@ const Setting = () => {
               <span className="unit">℃</span>
             </div>
             <div className="input-wrapper">
+              <span className="flex-none w-full mb-[1.6rem]">조리 시간 02</span>
               <TimeInput
                 control={control}
                 name="cook_2.running_time"
                 defaultValue={0}
                 disabled={!isPowerOn}
               />
-              <span className="unit">T</span>
             </div>
           </div>
           <div className="field">
-            <span className="flex-none w-full mb-[1.6rem]">조리 온도 02</span>
             <div className="input-wrapper">
+              <span className="flex-none w-full mb-[1.6rem]">조리 온도 03</span>
               <TemperatureInput
                 name="cook_3.temp"
                 control={control}
@@ -210,17 +225,34 @@ const Setting = () => {
               <span className="unit">℃</span>
             </div>
             <div className="input-wrapper">
+              <span className="basis-full mb-[1.6rem]">조리 시간 03</span>
               <TimeInput
                 control={control}
                 name="cook_3.running_time"
                 defaultValue={0}
                 disabled={!isPowerOn}
               />
-              <span className="unit">T</span>
             </div>
           </div>
+          <button className="h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white">
+            기기 설정 저장
+          </button>
         </form>
       </SettingWrapper>
+      <ConfirmModal
+        show={showConfirm}
+        text="해당 설정을 저장하시겠습니까?"
+        onConfirm={() => mutate(getValues())}
+        onClose={() => setShowConfirm(false)}
+      />
+      <AlertModal
+        show={showAlert}
+        text="저장 되었습니다."
+        onClose={() => {
+          setShowAlert(false);
+          back(true);
+        }}
+      />
     </StoreDetailLayout>
   );
 };

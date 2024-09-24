@@ -51,6 +51,12 @@ const TemperatureInput = ({
       value={value}
       onFocus={e => e.target?.select()}
       onChange={e => onChange(e.target.value?.replace(/(\d+)/g, '$1'))}
+      onBlur={() => {
+        const numberValue = parseInt(value);
+        if (numberValue > 250) {
+          onChange(250);
+        }
+      }}
       maxLength={3}
       disabled={disabled}
     />

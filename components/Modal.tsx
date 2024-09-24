@@ -29,7 +29,7 @@ const ModalStyle = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.55);
     z-index: 0;
   }
 
@@ -103,9 +103,9 @@ const Modal = ({
         <div className="content">
           {children}
           {/** Close Button */}
-          <button onClick={onClose} className="close" aria-label="Close Modal">
+          {/* <button onClick={onClose} className="close" aria-label="Close Modal">
             <Close />
-          </button>
+          </button> */}
         </div>
       </ModalStyle>
     </Portal>

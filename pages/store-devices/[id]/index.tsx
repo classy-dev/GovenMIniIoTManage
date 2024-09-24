@@ -171,7 +171,7 @@ const StoreDetail = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [data?.iot_info.temp]);
+  }, [data?.iot_info.power_running_time]);
 
   return (
     <TemperatureWrapper>

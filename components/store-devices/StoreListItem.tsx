@@ -117,12 +117,13 @@ const StoreItemWrapper = styled.div`
     }
   }
 
-  ${mq.md} {
+  /* ${mq.md} {
     flex-basis: calc(50% - 0.4rem);
-  }
+  } */
 
   ${mq.lg} {
-    flex-basis: calc(33.33% - 0.5333333333rem);
+    flex-basis: calc(50% - 0.4rem);
+    /* flex-basis: calc(33.33% - 0.5333333333rem); */
   }
 `;
 

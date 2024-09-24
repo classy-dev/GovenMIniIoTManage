@@ -2,23 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { useParentSize } from '@visx/responsive';
 import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
-import { AreaClosed, LinePath, Bar, Circle } from '@visx/shape';
-import { withTooltip, Tooltip, TooltipWithBounds } from '@visx/tooltip';
+import { AreaClosed, LinePath, Bar } from '@visx/shape';
+import { withTooltip, Tooltip } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 import { max, extent, bisector, min, mean } from '@visx/vendor/d3-array';
 import { Line } from '@visx/shape';
 import dayjs from 'dayjs';
 import { localPoint } from '@visx/event';
 import { LinearGradient } from '@visx/gradient';
-import {
-  curveBasis,
-  curveLinear,
-  curveCardinal,
-  curveMonotoneX,
-  curveMonotoneY,
-  curveNatural,
-  curveBundle,
-} from '@visx/curve';
+import { curveBasis } from '@visx/curve';
 import styled from '@emotion/styled';
 import ResponsiveContainer from './ResponsiveContainer';
 
@@ -52,25 +44,6 @@ const TooltipStyle = styled.div`
     font-weight: bold;
     color: #fff;
   }
-`;
-
-const AnimatedCircle = styled(Circle)`
-  transform-origin: center center;
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.5);
-      opacity: 0.7;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  animation: pulse 2s infinite;
 `;
 
 const WaveEffect = ({ cx, cy }: { cx: number; cy: number }) => (
