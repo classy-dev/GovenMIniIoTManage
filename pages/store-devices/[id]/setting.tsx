@@ -234,7 +234,10 @@ const Setting = () => {
               />
             </div>
           </div>
-          <button className="h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white">
+          <button
+            disabled={!isPowerOn}
+            className="h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white disabled:cursor-not-allowed"
+          >
             기기 설정 저장
           </button>
         </form>

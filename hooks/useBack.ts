@@ -21,7 +21,6 @@ const useBack = (options?: RoutingOptions) => {
         pathname: `/${path}`,
         search: opt.passQuery || passQuery ? search : undefined,
       });
-      
     },
     [router]
   );
