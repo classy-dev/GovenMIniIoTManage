@@ -10,6 +10,15 @@ import { Line } from '@visx/shape';
 import dayjs from 'dayjs';
 import { localPoint } from '@visx/event';
 import { LinearGradient } from '@visx/gradient';
+import {
+  curveBasis,
+  curveLinear,
+  curveCardinal,
+  curveMonotoneX,
+  curveMonotoneY,
+  curveNatural,
+  curveBundle,
+} from '@visx/curve';
 import styled from '@emotion/styled';
 import ResponsiveContainer from './ResponsiveContainer';
 
@@ -355,6 +364,7 @@ export default withTooltip<Props, ChartData>(
               y={d => temperatureScale(d.tempDifference) ?? 0}
               yScale={temperatureScale}
               fill="url(#area-gradient)"
+              curve={curveBasis}
             />
             <LinePath<(typeof transformedData)[number]>
               data={transformedData}
@@ -362,6 +372,7 @@ export default withTooltip<Props, ChartData>(
               y={d => temperatureScale(d.tempDifference) ?? 0}
               stroke="#FA4616"
               strokeWidth={2}
+              curve={curveBasis}
             />
             <Bar
               x={0}
