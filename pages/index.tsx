@@ -9,7 +9,7 @@ import styled from '@emotion/styled';
 import PieChart from '@/components/chart/PieChart';
 import Goven from '@/components/icons/Goven';
 import Flame from '@/components/icons/Flame';
-import RecentWeekCountChart from '@/components/chart/RecentWeekCountChart';
+import RecentCountChart from '@/components/chart/RecentCountChart';
 import dayjs from 'dayjs';
 import { getRandomInRange } from '@/util/rangeRandom';
 import FireWork from '@/components/icons/Firework';
@@ -20,6 +20,8 @@ import Pie from '@/components/icons/Pie';
 import IconAvgCard from '@/components/IconAvgCard';
 import StoreRanking from '@/components/StoreRanking';
 import { weekStoreRanking, weekStoreRankingLower } from '@/data/dashboard';
+import DateTypeToggle from '@/components/DateTypeToggle';
+import TodayWeather from '@/components/TodayWeather';
 
 const DashboardWrapper = styled.main`
   padding-bottom: 1.6rem;
@@ -117,6 +119,8 @@ export default function HomePage() {
     },
   ]);
 
+  const [dateType, setDateType] = useState('7일');
+
   useEffect(() => {
     const timer = setInterval(() => {
       const onValue = getRandomInRange(90, 99);
@@ -141,8 +145,11 @@ export default function HomePage() {
       <Seo title="GOVEN MINI" description="" image="" url="" />
       <DashboardWrapper className="mx-auto text-center uppercase font-sans  px-[1.6rem] flex flex-col gap-[0.8rem]">
         <div className="flex gap-[0.8rem] text-[1.4rem] flex-wrap">
+          <Card className="relative w-full basis-full md:basis-[23rem] min-h-[12rem]">
+            <TodayWeather />
+          </Card>
           {/** 운영률 키드 */}
-          <Card className="relative w-full lg:flex-1">
+          <Card className="relative w-full flex-1">
             <div className="w-full flex-1 flex justify-between">
               <div className="total-count">
                 <p className="title !leading-tight">
@@ -167,6 +174,8 @@ export default function HomePage() {
               </div>
             </div>
           </Card>
+        </div>
+        <div className="flex gap-[0.8rem] text-[1.4rem] flex-wrap">
           {/** 운영중인 고븐미니 카드 */}
           <Card
             className="basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex flex-col !bg-[#FA4616] text-white leading-tight text-left"
@@ -216,13 +225,27 @@ export default function HomePage() {
             </div>
           </Card>
         </div>
-        {/** 7일간 평균 가동 횟수 그래프 */}
-        <Card
-          title="7일간 가동 횟수 그래프"
-          sub={baseDate.format('YYYY.MM.DD')}
-        >
-          <RecentWeekCountChart className="w-full" />
-        </Card>
+        <div className="flex flex-wrap gap-[0.8rem]">
+          {/** 평균 가동 횟수 그래프 */}
+          <Card
+            // className="basis-full lg:basis-[calc(50%-0.4rem)]"
+            className="basis-full"
+            title="7일간 평균 가동 횟수 그래프"
+            sub={baseDate.format('YYYY.MM.DD')}
+          >
+            <RecentCountChart type="week" className="w-full" />
+          </Card>
+          {/** 평균 가동 횟수 그래프 */}
+          <Card
+            // className="basis-full lg:basis-[calc(50%-0.4rem)]"
+            className="basis-full"
+            title="30일간 평균 가동 횟수 그래프"
+            sub={baseDate.format('YYYY.MM.DD')}
+          >
+            <RecentCountChart type={'month'} className="w-full" />
+          </Card>
+        </div>
+
         {/** 일자별 매장 수 & 평균 가동 시간 */}
         <div className="flex gap-[0.8rem] text-[1.4rem] flex-wrap">
           <Card
@@ -241,8 +264,8 @@ export default function HomePage() {
           </Card>
         </div>
 
-        <div className="flex gap-[0.8rem] flex-wrap">
-          {/** 현재 가동률 & 현재 점포 수 & 현재 구성비 */}
+        {/** 현재 가동률 & 현재 점포 수 & 현재 구성비 */}
+        {/* <div className="flex gap-[0.8rem] flex-wrap">
           <IconAvgCard
             className="flex-none w-full md:flex-1 "
             icon={<Power />}
@@ -261,7 +284,7 @@ export default function HomePage() {
             title="현재 구성비"
             value={50.2}
           />
-        </div>
+        </div> */}
         <div className="flex flex-wrap gap-[0.8rem]">
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"

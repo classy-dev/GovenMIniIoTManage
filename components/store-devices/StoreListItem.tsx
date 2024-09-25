@@ -117,13 +117,8 @@ const StoreItemWrapper = styled.div`
     }
   }
 
-  /* ${mq.md} {
-    flex-basis: calc(50% - 0.4rem);
-  } */
-
   ${mq.lg} {
     flex-basis: calc(50% - 0.4rem);
-    /* flex-basis: calc(33.33% - 0.5333333333rem); */
   }
 `;
 
@@ -142,7 +137,7 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
   const diff = info.on_time ? currentTime.diff(onTime, 'second') : null;
 
   useEffect(() => {
-    if (info.power_status !== 2) return;
+    if (![1, 2].includes(info.power_status)) return;
 
     setTime(diff ?? 0);
     const timer = setInterval(() => {
@@ -164,10 +159,8 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
       <div className="status">
         <span className="badge">{status}</span>
         <time>
-          {status === 'on'
+          {status === 'on' || status === 'off'
             ? dayjs.unix(time).utc().format('HH:mm:ss')
-            : status === 'off'
-            ? '--:--:--'
             : ''}
           <br />
         </time>

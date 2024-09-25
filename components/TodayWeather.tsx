@@ -3,21 +3,53 @@ import dayjs from 'dayjs';
 import Sun from './icons/Sun';
 
 const TodayWeatherWrapper = styled.div`
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   font-size: 1.2rem;
-  padding-top: 0.8rem;
+  padding: 1.6rem;
   gap: 0.8rem;
-  /* font-family: 'Gmarket Sans'; */
+  background-color: #3f3f3f;
+  color: white;
+  border-radius: 0.6rem;
+
+  .date {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 0.8rem;
+  }
+
+  .temperature {
+    display: inline-flex;
+    align-items: baseline;
+  }
+
+  .temperature .max {
+    font-size: 3.2rem;
+    font-weight: bold;
+  }
+
+  .temperature .min {
+    font-size: 1.6rem;
+  }
 
   .weather {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.4rem;
-    svg {
-      color: #fab916;
-    }
+  }
+
+  svg {
+    width: 5rem;
+    height: 5rem;
+    color: #fab916;
   }
 `;
 
@@ -26,10 +58,13 @@ const today = dayjs();
 const TodayWeather = () => {
   return (
     <TodayWeatherWrapper>
-      <span className="date">{today.format('YYYY년 M월 DD일')}</span>
+      <Sun className="ico" />
       <span className="weather">
-        <Sun />
-        33°/23°
+        <span className="date">{today.format('YYYY년 M월 DD일')}</span>
+        <div className="temperature">
+          <span className="max">27°</span>
+          <span className="min">/19°</span>
+        </div>
       </span>
     </TodayWeatherWrapper>
   );

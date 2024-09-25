@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
 export interface CardProps {
   href?: string;
   title?: string;
-  sub?: string;
+  sub?: ReactNode;
   className?: string;
 }
 

@@ -9,7 +9,6 @@ const Navigation = () => {
           <img src="/goven-mini.png" alt="GOVEN MINI" />
         </Link>
       </h1>
-      <TodayWeather />
     </header>
   );
 };

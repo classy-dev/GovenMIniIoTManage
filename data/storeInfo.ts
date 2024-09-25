@@ -125,7 +125,7 @@ export const storeInfoList: StoreInfomation[] = [
     machinery_status: 1,
     installation_notes: null,
     power_status: 1,
-    on_time: '',
+    on_time: '2024-09-24 14:17:39',
   },
   {
     machinery_minigoven_idx: 833,
@@ -153,7 +153,7 @@ export const storeInfoList: StoreInfomation[] = [
     machinery_status: 1,
     installation_notes: null,
     power_status: 1,
-    on_time: '',
+    on_time: '2024-09-25 11:52:05',
   },
 
   {
@@ -167,7 +167,7 @@ export const storeInfoList: StoreInfomation[] = [
     machinery_status: 1,
     installation_notes: '새 씨리얼 넘버 등록 완 ',
     power_status: 1,
-    on_time: '',
+    on_time: '2024-09-25 08:32:05',
   },
   {
     machinery_minigoven_idx: 228,
@@ -195,7 +195,7 @@ export const storeInfoList: StoreInfomation[] = [
     machinery_status: 1,
     installation_notes: null,
     power_status: 1,
-    on_time: '',
+    on_time: '2024-09-25 04:12:05',
   },
   {
     machinery_minigoven_idx: 1004,
@@ -209,7 +209,7 @@ export const storeInfoList: StoreInfomation[] = [
     machinery_status: 1,
     installation_notes: null,
     power_status: 1,
-    on_time: '',
+    on_time: '2024-09-25 00:50:05',
   },
   {
     machinery_minigoven_idx: 1001,
@@ -322,7 +322,7 @@ export const storeInfoList: StoreInfomation[] = [
     installation_dt: '2024-08-28 12:06:04',
     machinery_status: 1,
     power_status: 1,
-    on_time: '',
+    on_time: '2024-09-23 10:40:05',
     installation_notes: null,
   },
   {

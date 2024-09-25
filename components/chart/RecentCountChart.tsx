@@ -6,13 +6,12 @@ import { curveBasis, curveLinear } from '@visx/curve';
 import { withTooltip } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 import { LinearGradient } from '@visx/gradient';
-import { max, extent, bisector, min } from '@visx/vendor/d3-array';
+import { max } from '@visx/vendor/d3-array';
 import { useParentSize } from '@visx/responsive';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import dayjs from 'dayjs';
-import { getRandomInRange } from '@/util/rangeRandom';
 import ResponsiveContainer from './ResponsiveContainer';
-
+import { weekCountData, monthCountData } from '@/data/dashboard';
 // type TooltipData = GroupDateValue;
 // const stock = mockupValue;
 
@@ -21,48 +20,22 @@ export const background2 = '#fff';
 export const accentColor = 'rgba(250, 70, 22, 0.3)';
 export const accentColorDark = '#171C8F';
 
-const mockup = [
-  {
-    date: '2024-09-18T06:19:16.852Z',
-    value: 310,
-  },
-  {
-    date: '2024-09-19T06:19:16.852Z',
-    value: 200,
-  },
-  {
-    date: '2024-09-20T06:19:16.852Z',
-    value: 150,
-  },
-  {
-    date: '2024-09-21T06:19:16.852Z',
-    value: 182,
-  },
-  {
-    date: '2024-09-22T06:19:16.852Z',
-    value: 183,
-  },
-  {
-    date: '2024-09-23T06:19:16.852Z',
-    value: 244,
-  },
-  {
-    date: '2024-09-24T06:19:16.852Z',
-    value: 100,
-  },
-];
-
-type ChartData = (typeof mockup)[number];
+type ChartData = {
+  date: string;
+  value: number;
+};
 
 const getDate = (d: ChartData) => new Date(d.date);
 const getValue = (data: ChartData) => data.value;
 
 export type AreaProps = {
+  type: 'week' | 'month';
   className?: string;
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
 export default ({
+  type,
   className,
   margin = { top: 36, right: 16, bottom: 16, left: 32 },
 }: AreaProps) => {
@@ -71,6 +44,7 @@ export default ({
   // bounds
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
+  const mockup = type === 'week' ? weekCountData : monthCountData;
 
   const XScale = useMemo(
     () =>
@@ -80,7 +54,7 @@ export default ({
         paddingInner: 1,
         paddingOuter: 0,
       }),
-    [innerWidth, margin.left]
+    [innerWidth, margin.left, mockup]
   );
 
   const YScale = useMemo(
@@ -90,7 +64,7 @@ export default ({
         domain: [0, Math.max(max(mockup, getValue) ?? 0, 230)],
         nice: true,
       }),
-    [margin.top, innerHeight]
+    [margin.top, innerHeight, mockup]
   );
 
   const guideY = useMemo(() => YScale(230), [YScale]);
@@ -162,6 +136,7 @@ export default ({
               fontFamily: 'GmarketSans',
             })}
             hideTicks
+            numTicks={Math.floor(width / 100)}
             tickLength={5}
             tickFormat={d => dayjs(d).format('MM/DD')}
           />

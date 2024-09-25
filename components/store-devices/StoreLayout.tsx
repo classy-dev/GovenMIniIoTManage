@@ -28,6 +28,7 @@ const HeaderWrapper = styled.header`
     padding: inherit;
     font-size: 1.6rem;
     line-height: 1;
+    white-space: nowrap;
   }
 
   .save {
