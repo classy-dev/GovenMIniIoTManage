@@ -158,7 +158,7 @@ export default function HomePage() {
                 <p className="total">
                   <span className="count">3,400</span> 대
                 </p>
-                <p className="updatedAt">{baseDate.format('YYYY.MM.DD')}</p>
+                <p className="updatedAt"></p>
               </div>
               <div className="inline-flex relative aspect-square w-[12.2rem] md:w-[16rem] ml-[5.2rem]">
                 <PieChart
