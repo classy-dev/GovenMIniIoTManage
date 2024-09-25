@@ -8,16 +8,11 @@ import StoreList from '@/components/store-devices/StoreList';
 import { storeInfoList } from '@/data/storeInfo';
 import useChosungFilter from '@/hooks/useChosungFilter';
 import useSearchParamsFromRouter from '@/hooks/useSearchParamsFromRouter';
+import { mq } from '@/styles/responsive';
 import { throttleEvent } from '@/util/event';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import {
-  ReactElement,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactElement, useEffect, useMemo, useState } from 'react';
 
 const StoreDeviceListWrapper = styled.div`
   display: flex;
@@ -25,8 +20,10 @@ const StoreDeviceListWrapper = styled.div`
   justify-content: flex-start;
   gap: 1.6rem;
   padding: 1.6rem;
-  padding-top: 6.2rem;
-  margin-top: 6.2rem;
+
+  ${mq.md} {
+    padding-top: 6.2rem;
+  }
 `;
 
 const StoreDevices = () => {

@@ -78,26 +78,37 @@ const StoreFilter = ({ filter, onChangeFilter }: Props) => {
         />
       </SearchInputWrapper>
       <StoreStatus
-        className="absolute left-0 top-[100%] p-[1.6rem] w-full bg-white"
+        className="!hidden md:flex absolute left-0 top-[100%] p-[1.6rem] w-full bg-white"
         selectedValue={filter.status}
         onChange={status => onChangeFilter({ ...filter, status })}
       />
-      {/* <button className="md:hidden">
+      <button className="md:hidden" onClick={() => setToggleMenu(!toggleMenu)}>
         <Search />
       </button>
-      <div className="md:hidden absolute top-[100%] p-[1.6rem] left-0 w-full flex flex-col">
+      <div
+        className={`${
+          toggleMenu ? '' : 'hidden'
+        } md:hidden absolute z-20 top-[100%] border-t bg-white 
+      rounded-b-[0.6rem] p-[1.6rem] left-0 w-full flex flex-col items-center`}
+      >
         <input
+          className="w-full rounded-[0.6rem] px-[1.6rem] h-[4.8rem] border border-[#A0A0A0]"
           type="text"
           defaultValue={filter.keyword}
           placeholder="매장명을 입력해주세요."
           onChange={onSearch}
         />
         <StoreStatus
-          className=""
+          className="!inline-flex w-auto mt-[1.6rem]"
           selectedValue={filter.status}
           onChange={status => onChangeFilter({ ...filter, status })}
         />
-      </div> */}
+      </div>
+      <div
+        className={`${
+          toggleMenu ? '' : 'hidden'
+        } absolute left-0 top-[100%] bottom-0 w-full h-[calc(100vh-5.4rem)] z-10 bg-[currentColor] opacity-50`}
+      />
     </React.Fragment>
   );
 };
