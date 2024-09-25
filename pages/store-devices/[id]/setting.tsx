@@ -160,7 +160,7 @@ const Setting = () => {
           onSubmit={handleSubmit(data => setShowConfirm(true))}
         >
           <div className="field">
-            <span className="label">예열 온도 설정</span>
+            <span className="label">예열 온도</span>
             <div className="input-wrapper justify-end">
               <TemperatureInput
                 control={control}
