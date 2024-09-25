@@ -14,7 +14,8 @@ const SearchInputWrapper = styled.div`
   height: 4.8rem;
   border: 1px solid #a0a0a0;
   border-radius: 0.6rem;
-  margin-bottom: 1px;
+
+  margin-bottom: 2px;
 
   &:focus-within {
     border-color: #3f3f3f;
@@ -35,7 +36,7 @@ const SearchInputWrapper = styled.div`
     border-radius: inherit;
   }
 
-  ${mq.lg} {
+  ${mq.md} {
     display: inline-flex;
   }
 `;
@@ -78,7 +79,7 @@ const StoreFilter = ({ filter, onChangeFilter }: Props) => {
         />
       </SearchInputWrapper>
       <StoreStatus
-        className="!hidden md:flex absolute left-0 top-[100%] p-[1.6rem] w-full bg-white"
+        className="!hidden md:!flex absolute left-0 top-[100%] p-[1.6rem] w-full bg-white"
         selectedValue={filter.status}
         onChange={status => onChangeFilter({ ...filter, status })}
       />
