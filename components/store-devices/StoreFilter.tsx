@@ -109,6 +109,7 @@ const StoreFilter = ({ filter, onChangeFilter }: Props) => {
         className={`${
           toggleMenu ? '' : 'hidden'
         } absolute left-0 top-[100%] bottom-0 w-full h-[calc(100vh-5.4rem)] z-10 bg-[currentColor] opacity-50`}
+        onClick={() => setToggleMenu(false)}
       />
     </React.Fragment>
   );
