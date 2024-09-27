@@ -1,8 +1,8 @@
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import styled from '@emotion/styled';
 import { StoreInfomation } from '@/data/storeInfo';
 import { mq } from '@/styles/responsive';
-import styled from '@emotion/styled';
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
 
 const StoreItemWrapper = styled.div`
   position: relative;
@@ -137,14 +137,14 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
   const diff = info.on_time ? currentTime.diff(onTime, 'second') : null;
 
   useEffect(() => {
-    if (![1, 2].includes(info.power_status)) return;
+    if (![1, 2].includes(info.power_status)) return () => {};
 
     setTime(diff ?? 0);
-    const timer = setInterval(() => {
+    const timer = window.setInterval(() => {
       setTime(prev => prev + 1);
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, [diff, info.power_status]);
 
   return (

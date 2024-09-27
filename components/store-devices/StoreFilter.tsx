@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from 'react';
-
-import { mq } from '@/styles/responsive';
 import styled from '@emotion/styled';
-import Search from '../icons/Search';
+import { mq } from '@/styles/responsive';
 import { throttleEvent } from '@/util/event';
 import StoreStatus from './StoreStatus';
+import Search from '../icons/Search';
 
 const SearchInputWrapper = styled.div`
   display: none;
@@ -83,7 +82,12 @@ const StoreFilter = ({ filter, onChangeFilter }: Props) => {
         selectedValue={filter.status}
         onChange={status => onChangeFilter({ ...filter, status })}
       />
-      <button className="md:hidden" onClick={() => setToggleMenu(!toggleMenu)}>
+      <button
+        type="button"
+        className="md:hidden"
+        onClick={() => setToggleMenu(!toggleMenu)}
+        aria-label="search"
+      >
         <Search />
       </button>
       <div
@@ -106,10 +110,14 @@ const StoreFilter = ({ filter, onChangeFilter }: Props) => {
         />
       </div>
       <div
+        tabIndex={0}
+        role="button"
+        aria-label="Dim"
         className={`${
           toggleMenu ? '' : 'hidden'
         } absolute left-0 top-[100%] bottom-0 w-full h-[calc(100vh-5.4rem)] z-10 bg-[currentColor] opacity-50`}
         onClick={() => setToggleMenu(false)}
+        onKeyPress={e => e.key === 'Enter' && setToggleMenu(false)}
       />
     </React.Fragment>
   );

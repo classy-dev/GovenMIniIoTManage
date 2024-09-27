@@ -1,11 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react';
-import Pie, { ProvidedProps, PieArcDatum } from '@visx/shape/lib/shapes/Pie';
-import { scaleOrdinal } from '@visx/scale';
-import { Group } from '@visx/group';
-import { GradientPinkBlue } from '@visx/gradient';
-
+import React, { useRef } from 'react';
 import { animated, useTransition, useSpring, to } from '@react-spring/web';
+import { GradientPinkBlue } from '@visx/gradient';
+import { Group } from '@visx/group';
 import { useParentSize } from '@visx/responsive';
+import { scaleOrdinal } from '@visx/scale';
+import Pie, { ProvidedProps, PieArcDatum } from '@visx/shape/lib/shapes/Pie';
 
 // accessor functions
 const names = ['on', 'off'];
@@ -28,89 +27,6 @@ export type PieProps = {
   data: PieData[];
   animate?: boolean;
 };
-
-export default function PieChart({
-  className,
-  margin = defaultMargin,
-  data,
-  animate = true,
-}: PieProps) {
-  const { parentRef, width, height } = useParentSize({ debounceTime: 150 });
-  const prevCount = useRef(0);
-
-  const innerWidth = width - margin.left - margin.right;
-  const innerHeight = height - margin.top - margin.bottom;
-  const radius = Math.min(innerWidth, innerHeight) / 2;
-  const centerY = innerHeight / 2;
-  const centerX = innerWidth / 2;
-  const donutThickness = 10;
-
-  // Calculate progress percentage
-  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
-  const onValue = data.find(item => item.label === 'on')?.value || 0;
-  const progressPercentage = Math.round((onValue / totalValue) * 100);
-
-  // Animate the progress percentage
-  const { number } = useSpring({
-    from: { number: prevCount.current },
-    number: progressPercentage,
-    onResolve: () => (prevCount.current = progressPercentage),
-  });
-
-  return (
-    <div ref={parentRef} className={className ?? ''}>
-      <svg width={width} height={height}>
-        <GradientPinkBlue id="visx-pie-gradient" />
-        <Group top={centerY + margin.top} left={centerX + margin.left}>
-          <Pie
-            data={data}
-            outerRadius={radius}
-            innerRadius={radius - donutThickness}
-            pieValue={data => data.value}
-            padAngle={0.005}
-            cornerRadius={8}
-            pieSort={(a, b) => (a.label === 'on' ? 1 : 0)}
-          >
-            {pie => (
-              <AnimatedPie<(typeof data)[0]>
-                {...pie}
-                animate={animate}
-                getKey={arc => arc.data.label}
-                onClickDatum={({ data: { label } }) => {}}
-                getColor={arc => getColorSpace(arc.data.label)}
-              />
-            )}
-          </Pie>
-          <text
-            fill="#FA4616"
-            x={0}
-            y={0}
-            className=""
-            textAnchor="middle"
-            fontWeight="bold"
-            pointerEvents="none"
-          >
-            <animated.tspan
-              className="text-[2.4rem] md:text-[4.2rem]"
-              alignmentBaseline="middle"
-              textAnchor={'middle'}
-            >
-              {number.to(n => `${n.toFixed(0)}`)}
-            </animated.tspan>
-            <tspan
-              className="text-[1.4rem] md:text-[1.6rem]"
-              dx="0.1em"
-              dy="1em"
-              alignmentBaseline="baseline"
-            >
-              %
-            </tspan>
-          </text>
-        </Group>
-      </svg>
-    </div>
-  );
-}
 
 // react-spring transition definitions
 type AnimatedStyles = { startAngle: number; endAngle: number; opacity: number };
@@ -151,8 +67,8 @@ function AnimatedPie<Datum>({
     keys: getKey,
   });
   return transitions((props, arc, { key }) => {
-    const [centroidX, centroidY] = path.centroid(arc);
-    const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.1;
+    // const [centroidX, centroidY] = path.centroid(arc);
+    // const hasSpaceForLabel = arc.endAngle - arc.startAngle >= 0.1;
 
     return (
       <g key={key}>
@@ -169,22 +85,94 @@ function AnimatedPie<Datum>({
           onClick={() => onClickDatum(arc)}
           onTouchStart={() => onClickDatum(arc)}
         />
-        {/* {hasSpaceForLabel && (
-          <animated.g style={{ opacity: props.opacity }}>
-            <text
-              fill="white"
-              x={centroidX}
-              y={centroidY}
-              dy=".33em"
-              fontSize={9}
-              textAnchor="middle"
-              pointerEvents="none"
-            >
-              {getKey(arc)}
-            </text>
-          </animated.g>
-        )} */}
       </g>
     );
   });
 }
+
+const PieChart = ({
+  className,
+  margin = defaultMargin,
+  data,
+  animate = true,
+}: PieProps) => {
+  const { parentRef, width, height } = useParentSize({ debounceTime: 150 });
+  const prevCount = useRef(0);
+
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+  const radius = Math.min(innerWidth, innerHeight) / 2;
+  const centerY = innerHeight / 2;
+  const centerX = innerWidth / 2;
+  const donutThickness = 10;
+
+  // Calculate progress percentage
+  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+  const onValue = data.find(item => item.label === 'on')?.value || 0;
+  const progressPercentage = Math.round((onValue / totalValue) * 100);
+
+  // Animate the progress percentage
+  const { number } = useSpring({
+    from: { number: prevCount.current },
+    number: progressPercentage,
+    onResolve: () => {
+      prevCount.current = progressPercentage;
+    },
+  });
+
+  return (
+    <div ref={parentRef} className={className ?? ''}>
+      <svg width={width} height={height}>
+        <GradientPinkBlue id="visx-pie-gradient" />
+        <Group top={centerY + margin.top} left={centerX + margin.left}>
+          <Pie
+            data={data}
+            outerRadius={radius}
+            innerRadius={radius - donutThickness}
+            pieValue={d => d.value}
+            padAngle={0.005}
+            cornerRadius={8}
+            pieSort={(a, b) => (a.label === 'on' ? 1 : 0)}
+          >
+            {pie => (
+              <AnimatedPie<(typeof data)[0]>
+                {...pie}
+                animate={animate}
+                getKey={arc => arc.data.label}
+                onClickDatum={({ data: { label } }) => {}}
+                getColor={arc => getColorSpace(arc.data.label)}
+              />
+            )}
+          </Pie>
+          <text
+            fill="#FA4616"
+            x={0}
+            y={0}
+            className=""
+            textAnchor="middle"
+            fontWeight="bold"
+            pointerEvents="none"
+          >
+            <animated.tspan
+              className="text-[2.4rem] md:text-[4.2rem]"
+              alignmentBaseline="middle"
+              textAnchor="middle"
+            >
+              {number.to(n => `${n.toFixed(0)}`)}
+            </animated.tspan>
+            <tspan
+              className="text-[1.4rem] md:text-[1.6rem]"
+              dx="0.1em"
+              dy="1em"
+              alignmentBaseline="baseline"
+            >
+              %
+            </tspan>
+          </text>
+        </Group>
+      </svg>
+    </div>
+  );
+};
+
+export default PieChart;

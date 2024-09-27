@@ -1,6 +1,6 @@
+import Link from 'next/link';
 import { StoreRankInfo } from '@/data/dashboard';
 import Card from './Card';
-import Link from 'next/link';
 
 interface StoreRankingProps {
   className?: string;
@@ -21,7 +21,7 @@ const StoreRanking = ({
         <Link
           key={data.machinery_minigoven_idx}
           className="inline-flex w-full"
-          scroll={true}
+          scroll
           href={`/store-devices/${data.machinery_minigoven_idx}`}
         >
           <div
@@ -41,13 +41,13 @@ const StoreRanking = ({
                   data.prev_week_compare === 0
                     ? 'text-[#8E8E8E]'
                     : data.prev_week_compare > 0
-                    ? 'text-[#38A5FF]'
-                    : 'text-[#FA4616]'
+                      ? 'text-[#38A5FF]'
+                      : 'text-[#FA4616]'
                 }`}
               >
                 {data.prev_week_compare <= 0
                   ? data.prev_week_compare
-                  : '+' + data.prev_week_compare}
+                  : `+${data.prev_week_compare}`}
                 %
               </span>
             </div>

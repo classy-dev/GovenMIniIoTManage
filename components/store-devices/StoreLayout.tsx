@@ -72,6 +72,7 @@ const Header = ({
   return (
     <HeaderWrapper>
       <button
+        type="button"
         className="back"
         aria-label="뒤로가기"
         onClick={() => onBackClick?.()}
@@ -97,14 +98,14 @@ const StoreLayout = ({
 
   const rightNode = useMemo(
     () =>
-      rightContent ? (
-        rightContent
-      ) : onSave ? (
-        <button className="save" onClick={onSave}>
+      rightContent ||
+      (onSave ? (
+        <button type="button" className="save" onClick={onSave}>
           저장
         </button>
       ) : onSearch ? (
         <button
+          type="button"
           className="search aria-hidden:invisible"
           aria-label="검색"
           aria-hidden="true"
@@ -114,7 +115,7 @@ const StoreLayout = ({
         </button>
       ) : (
         <></>
-      ),
+      )),
     [rightContent, onSave, onSearch]
   );
 

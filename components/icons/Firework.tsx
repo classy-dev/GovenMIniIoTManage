@@ -1,6 +1,6 @@
+import { SVGProps } from 'react';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { SVGProps } from 'react';
 
 export const flicker = keyframes`
      0% {

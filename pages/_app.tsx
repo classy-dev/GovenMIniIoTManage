@@ -1,25 +1,22 @@
 import Navigation from '@/components/Navigation';
 import '@/styles/globals.css';
-import styled from '@emotion/styled';
-import { AppPropsWithLayout } from 'next';
 
-import type { AppProps } from 'next/app';
+import React, { useMemo } from 'react';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import Script from 'next/script';
-import React from 'react';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { AppPropsWithLayout } from 'next';
 import {
   MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import styled from '@emotion/styled';
 
 const LayoutWrapper = styled.div`
   max-width: 102.4rem;
 `;
-
-import utc from 'dayjs/plugin/utc';
-import dayjs from 'dayjs';
 
 dayjs.extend(utc);
 
@@ -30,7 +27,7 @@ const Layout = ({ children }: React.PropsWithChildren) => (
   </LayoutWrapper>
 );
 
-export default function App({ Component, pageProps }: AppPropsWithLayout) {
+const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const { current: queryClient } = React.useRef(
     new QueryClient({
       defaultOptions: {
@@ -110,4 +107,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       </QueryClientProvider>
     </>
   );
-}
+};
+
+export default App;

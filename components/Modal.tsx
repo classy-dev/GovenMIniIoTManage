@@ -1,8 +1,7 @@
-import styled from '@emotion/styled';
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect } from 'react';
-
+import styled from '@emotion/styled';
 import Portal from './Portal';
-import Close from './icons/Close';
 
 const ModalStyle = styled.div`
   position: fixed;
@@ -15,7 +14,9 @@ const ModalStyle = styled.div`
   overflow-y: auto;
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0.5s 0.5s ease, opacity 0.5s ease;
+  transition:
+    visibility 0.5s 0.5s ease,
+    opacity 0.5s ease;
 
   &[aria-hidden='false'] {
     transition-delay: 0ms !important;

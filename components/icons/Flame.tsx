@@ -1,5 +1,5 @@
-import { keyframes } from "@emotion/react";
-import styled from "@emotion/styled";
+import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 
 const flicker = keyframes`
     0%,
@@ -71,10 +71,10 @@ const Flame = () => {
   return (
     <FlameWrapper>
       <div className="flame-container">
-        <div className="flame red"></div>
-        <div className="flame orange"></div>
-        <div className="flame gold"></div>
-        <div className="flame white"></div>
+        <div className="flame red" />
+        <div className="flame orange" />
+        <div className="flame gold" />
+        <div className="flame white" />
       </div>
     </FlameWrapper>
   );

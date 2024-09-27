@@ -1,3 +1,8 @@
+import { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import styled from '@emotion/styled';
 import { updateDeviceSettingInfo } from '@/api/device';
 import ConfirmModal, { AlertModal } from '@/components/ConfirmModal';
 import TemperatureInput from '@/components/form/TemperatureInput';
@@ -5,12 +10,6 @@ import TimeInput from '@/components/form/TimeInput';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
 import useBack from '@/hooks/useBack';
 import useDeviceSettingInfo from '@/hooks/useDeviceSetting';
-import { formRequestSubmit } from '@/util/form';
-import styled from '@emotion/styled';
-import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
 
 const SettingWrapper = styled.div`
   max-width: 76.8rem;
@@ -235,6 +234,7 @@ const Setting = () => {
             </div>
           </div>
           <button
+            type="button"
             disabled={!isPowerOn}
             className="h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white disabled:cursor-not-allowed"
           >

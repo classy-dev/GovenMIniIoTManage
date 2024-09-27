@@ -1,16 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
-import { useParentSize } from '@visx/responsive';
-import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
-import { AreaClosed, LinePath, Bar } from '@visx/shape';
-import { withTooltip, Tooltip } from '@visx/tooltip';
-import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
-import { max, extent, bisector, min, mean } from '@visx/vendor/d3-array';
-import { Line } from '@visx/shape';
-import dayjs from 'dayjs';
+import { curveBasis } from '@visx/curve';
 import { localPoint } from '@visx/event';
 import { LinearGradient } from '@visx/gradient';
-import { curveBasis } from '@visx/curve';
+import { useParentSize } from '@visx/responsive';
+import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
+import { AreaClosed, LinePath, Bar, Line } from '@visx/shape';
+import { withTooltip, Tooltip } from '@visx/tooltip';
+import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
+import { max, extent, bisector, mean } from '@visx/vendor/d3-array';
+import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import ResponsiveContainer from './ResponsiveContainer';
 
@@ -162,7 +161,6 @@ export default withTooltip<Props, ChartData>(
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     const safetooltipLeft = Math.max(Math.min(tooltipLeft, innerWidth - 1), 1);
-    const safetooltipTop = Math.max(Math.min(tooltipTop, innerHeight), 0);
 
     // Calculate min and max temperature differences
 
@@ -171,7 +169,7 @@ export default withTooltip<Props, ChartData>(
     const yMax = Math.max(maxDiff);
 
     useEffect(() => {
-      if (!isNaN(currentTemperature) && initialTemperature === -1) {
+      if (!Number.isNaN(currentTemperature) && initialTemperature === -1) {
         setInitialTemperature(currentTemperature);
       }
     }, [currentTemperature, initialTemperature]);
@@ -183,7 +181,7 @@ export default withTooltip<Props, ChartData>(
           range: [0, innerWidth],
           domain: extent(data, d => new Date(`${date}T${d.time}`)) as [
             Date,
-            Date
+            Date,
           ],
         }),
       [innerWidth, data, date, currentDateTime]
@@ -230,8 +228,7 @@ export default withTooltip<Props, ChartData>(
         1
       );
       const d0 = transformedData[index - 1];
-      const d1 = transformedData[index];
-      let d = d0;
+      const d = d0;
 
       if (d) {
         showTooltip({
@@ -246,7 +243,7 @@ export default withTooltip<Props, ChartData>(
       }
     };
 
-    if (width < 10 || isNaN(currentTemperature) || !currentTime)
+    if (width < 10 || Number.isNaN(currentTemperature) || !currentTime)
       return (
         <ResponsiveContainer ref={parentRef} className={className ?? ''} />
       );
@@ -302,8 +299,8 @@ export default withTooltip<Props, ChartData>(
               left={0}
               top={innerHeight + 2}
               strokeWidth={2}
-              stroke={'rgba(226, 226, 226, 1)'}
-              tickStroke={'#170b0b'}
+              stroke="rgba(226, 226, 226, 1)"
+              tickStroke="#170b0b"
               tickLabelProps={(v, i) => ({
                 fill: 'rgba(193, 193, 193, 1)',
                 fontSize: 12,
@@ -312,7 +309,7 @@ export default withTooltip<Props, ChartData>(
               })}
               hideTicks
               tickLength={1}
-              tickFormat={v => dayjs(`${date} ${v}`).format('HH') + 'H'}
+              tickFormat={v => `${dayjs(`${date} ${v}`).format('HH')}H`}
             />
             <AxisLeft
               scale={temperatureScale}

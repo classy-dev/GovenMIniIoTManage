@@ -1,16 +1,12 @@
 import React, { useMemo } from 'react';
-import { Bar, Line } from '@visx/shape';
-import { Group } from '@visx/group';
-
-import { GradientTealBlue } from '@visx/gradient';
-import { weekOnTimeAvgData, weekStoreCountData } from '@/data/dashboard';
-import { scaleBand, scaleLinear } from '@visx/scale';
-import { useParentSize } from '@visx/responsive';
-import ResponsiveContainer from './ResponsiveContainer';
 import { AxisBottom, AxisLeft } from '@visx/axis';
+import { Group } from '@visx/group';
+import { useParentSize } from '@visx/responsive';
+import { scaleBand, scaleLinear } from '@visx/scale';
+import { Bar, Line } from '@visx/shape';
 import dayjs from 'dayjs';
-
-const verticalMargin = 120;
+import { weekOnTimeAvgData, weekStoreCountData } from '@/data/dashboard';
+import ResponsiveContainer from './ResponsiveContainer';
 
 export type BarsProps = {
   className?: string;

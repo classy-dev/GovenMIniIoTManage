@@ -1,6 +1,6 @@
-import { mq } from '@/styles/responsive';
-import styled from '@emotion/styled';
 import React from 'react';
+import styled from '@emotion/styled';
+import { mq } from '@/styles/responsive';
 
 const ResponsiveContainerWrapper = styled.div`
   position: relative;
@@ -37,5 +37,7 @@ const ResponsiveContainer = React.forwardRef<
     </ResponsiveContainerWrapper>
   );
 });
+
+ResponsiveContainer.displayName = 'ResponsiveContainer';
 
 export default ResponsiveContainer;

@@ -1,12 +1,6 @@
-import styled from '@emotion/styled';
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useController, Control } from 'react-hook-form';
-
-interface TimeInputProps {
-  name: string;
-  control: Control<any>;
-  defaultValue?: number;
-}
+import styled from '@emotion/styled';
 
 const TimeInputWrapper = styled.div`
   width: 12rem;
@@ -67,6 +61,7 @@ interface TimeInputProps {
   defaultValue?: number;
   disabled?: boolean;
 }
+
 const TimeInput: React.FC<TimeInputProps> = ({
   name,
   control,
@@ -75,7 +70,6 @@ const TimeInput: React.FC<TimeInputProps> = ({
 }) => {
   const {
     field: { onChange, value },
-    fieldState: { error },
   } = useController({
     name,
     control,
@@ -87,14 +81,15 @@ const TimeInput: React.FC<TimeInputProps> = ({
   const minutesInputRef = useRef<HTMLInputElement>(null);
   const secondsInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (value !== undefined) {
-      const mins = Math.floor(value / 60);
-      const secs = value % 60;
-      setMinutes(mins.toString());
-      setSeconds(secs.toString().padStart(2, '0'));
-    }
-  }, [value]);
+  const handleFocusSeconds = () => {
+    secondsInputRef.current?.focus();
+    secondsInputRef.current?.select();
+  };
+
+  const handleFocusMinute = () => {
+    minutesInputRef.current?.focus();
+    minutesInputRef.current?.select();
+  };
 
   const handleInputMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -128,15 +123,14 @@ const TimeInput: React.FC<TimeInputProps> = ({
     updateValue();
   };
 
-  const handleFocusSeconds = () => {
-    secondsInputRef.current?.focus();
-    secondsInputRef.current?.select();
-  };
-
-  const handleFocusMinute = () => {
-    minutesInputRef.current?.focus();
-    minutesInputRef.current?.select();
-  };
+  useEffect(() => {
+    if (value !== undefined) {
+      const mins = Math.floor(value / 60);
+      const secs = value % 60;
+      setMinutes(mins.toString());
+      setSeconds(secs.toString().padStart(2, '0'));
+    }
+  }, [value]);
 
   return (
     <TimeInputWrapper

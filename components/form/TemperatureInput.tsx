@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Control, useController } from 'react-hook-form';
+import styled from '@emotion/styled';
 
 const InputStyle = styled.input`
   width: 12rem;
@@ -35,7 +35,6 @@ const TemperatureInput = ({
 }: TemperatureInputProps) => {
   const {
     field: { onChange, value },
-    fieldState: { error },
   } = useController({
     name,
     control,

@@ -1,3 +1,6 @@
+import { ReactElement, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import styled from '@emotion/styled';
 import Seo from '@/components/Seo';
 import StoreFilter, {
   StoreFilterData,
@@ -9,10 +12,6 @@ import { storeInfoList } from '@/data/storeInfo';
 import useChosungFilter from '@/hooks/useChosungFilter';
 import useSearchParamsFromRouter from '@/hooks/useSearchParamsFromRouter';
 import { mq } from '@/styles/responsive';
-import { throttleEvent } from '@/util/event';
-import styled from '@emotion/styled';
-import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useMemo, useState } from 'react';
 
 const StoreDeviceListWrapper = styled.div`
   display: flex;
@@ -46,8 +45,8 @@ const StoreDevices = () => {
         !filter.status || filter.status === 'none'
           ? true
           : filter.status === 'ON'
-          ? store.power_status === 2
-          : store.power_status === 1
+            ? store.power_status === 2
+            : store.power_status === 1
       ),
     [filter]
   );
@@ -64,7 +63,7 @@ const StoreDevices = () => {
   useEffect(() => {
     const params = new URLSearchParams(qs.toString());
     params.set('p', filter.status ?? '');
-    router.replace(router.pathname + '?' + params.toString(), undefined, {
+    router.replace(`${router.pathname}?${params.toString()}`, undefined, {
       shallow: true,
       scroll: false,
     });
@@ -86,7 +85,7 @@ const StoreDevices = () => {
           data={searchedList}
           onClickStore={store =>
             router.push(
-              '/store-devices/' + store.machinery_minigoven_idx + `?${search}`
+              `/store-devices/${store.machinery_minigoven_idx}?${search}`
             )
           }
         />

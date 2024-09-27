@@ -1,9 +1,10 @@
+import { ReactElement } from 'react';
+import dayjs from 'dayjs';
+import styled from '@emotion/styled';
 import ArrowRight from '@/components/icons/ArrowRight';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
-import styled from '@emotion/styled';
-import { ReactElement } from 'react';
 import historymockup from '@/data/history.json';
-import dayjs from 'dayjs';
+
 type HistoryData = {
   date: string;
   oven_operation_history: { time: string; action: string }[];
@@ -72,11 +73,11 @@ const History = () => {
   return (
     <HistoryWrapper>
       <div className="date">
-        <button className="left">
+        <button type="button" aria-label="left" className="left">
           <ArrowRight />
         </button>
         <span>{dayjs(data.date).format('YYYY-MM-DD')}</span>
-        <button className="right">
+        <button type="button" aria-label="right" className="right">
           <ArrowRight />
         </button>
       </div>

@@ -1,15 +1,13 @@
-import { storeInfoList } from '@/data/storeInfo';
-import { useRouter } from 'next/router';
 import { ReactElement, useEffect, useMemo, useState } from 'react';
-
-import temperature_json from '@/temperature_data_2024_09_11.json';
-import TemperatureChart from '@/components/chart/TemperatureChart';
 import dayjs from 'dayjs';
-import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
+import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import Fire, { FireOff } from '@/components/icons/Temperature';
-import useDeviceInfo from '@/hooks/useDeviceInfo';
+import TemperatureChart from '@/components/chart/TemperatureChart';
 import { flicker } from '@/components/icons/Firework';
+import Fire, { FireOff } from '@/components/icons/Temperature';
+import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
+import useDeviceInfo from '@/hooks/useDeviceInfo';
+import temperature_json from '@/temperature_data_2024_09_11.json';
 
 type mockData = {
   date: string;
@@ -165,15 +163,15 @@ const StoreDetail = () => {
   );
 
   useEffect(() => {
-    if (!data) return;
-    isON && setTime(Number(data?.iot_info.power_running_time));
+    if (!data) return () => {};
+    if (isON) setTime(Number(data?.iot_info.power_running_time));
     setCurrentTime(dayjs().format('HH:mm:ss'));
-    const timer = setInterval(() => {
-      isON && setTime(val => val + 1);
+    const timer = window.setInterval(() => {
+      if (isON) setTime(val => val + 1);
       setCurrentTime(dayjs().format('HH:mm:ss'));
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, [data?.iot_info.power_running_time, isON]);
 
   return (

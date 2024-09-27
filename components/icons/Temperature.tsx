@@ -26,7 +26,7 @@ import { SVGProps } from 'react';
   </defs>
 </svg>;
 
-export const Fire = (props: SVGProps<SVGSVGElement>) => (
+const Fire = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width="20"
     height="28"

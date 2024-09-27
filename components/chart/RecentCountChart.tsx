@@ -1,19 +1,14 @@
-import React, { useMemo, useCallback } from 'react';
-import { AreaClosed, Bar, Line, LinePath } from '@visx/shape';
-
-import { scaleLinear, scaleBand } from '@visx/scale';
-import { curveBasis, curveLinear } from '@visx/curve';
-import { withTooltip } from '@visx/tooltip';
-import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
-import { LinearGradient } from '@visx/gradient';
-import { max } from '@visx/vendor/d3-array';
-import { useParentSize } from '@visx/responsive';
+import React, { useMemo } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
+import { curveLinear } from '@visx/curve';
+import { LinearGradient } from '@visx/gradient';
+import { useParentSize } from '@visx/responsive';
+import { scaleLinear, scaleBand } from '@visx/scale';
+import { AreaClosed, Line, LinePath } from '@visx/shape';
+import { max } from '@visx/vendor/d3-array';
 import dayjs from 'dayjs';
-import ResponsiveContainer from './ResponsiveContainer';
 import { weekCountData, monthCountData } from '@/data/dashboard';
-// type TooltipData = GroupDateValue;
-// const stock = mockupValue;
+import ResponsiveContainer from './ResponsiveContainer';
 
 export const background = '#fff';
 export const background2 = '#fff';
@@ -34,7 +29,7 @@ export type AreaProps = {
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
-export default ({
+const RecentCountChart = ({
   type,
   className,
   margin = { top: 36, right: 16, bottom: 16, left: 32 },
@@ -127,8 +122,8 @@ export default ({
             left={0}
             top={innerHeight}
             strokeWidth={2}
-            stroke={'rgba(226, 226, 226, 1)'}
-            tickStroke={'#170b0b'}
+            stroke="rgba(226, 226, 226, 1)"
+            tickStroke="#170b0b"
             tickLabelProps={(v, i, values) => ({
               fill: 'rgba(193, 193, 193, 1)',
               fontSize: 10,
@@ -162,3 +157,5 @@ export default ({
     </ResponsiveContainer>
   );
 };
+
+export default RecentCountChart;

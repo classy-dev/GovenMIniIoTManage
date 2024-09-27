@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from 'react';
-
-import { storeInfoList } from '@/data/storeInfo';
-
-import Seo from '@/components/Seo';
-import { useRouter } from 'next/router';
-import Card from '@/components/Card';
-import styled from '@emotion/styled';
-import PieChart from '@/components/chart/PieChart';
-import Goven from '@/components/icons/Goven';
-import Flame from '@/components/icons/Flame';
-import RecentCountChart from '@/components/chart/RecentCountChart';
 import dayjs from 'dayjs';
-import { getRandomInRange } from '@/util/rangeRandom';
-import FireWork from '@/components/icons/Firework';
+import styled from '@emotion/styled';
+import Card from '@/components/Card';
 import { OnTimeAvgChart, StoreCountChart } from '@/components/chart/BarChart';
-import Home from '@/components/icons/Home';
-import Power from '@/components/icons/Power';
-import Pie from '@/components/icons/Pie';
-import IconAvgCard from '@/components/IconAvgCard';
+import PieChart from '@/components/chart/PieChart';
+import RecentCountChart from '@/components/chart/RecentCountChart';
+import FireWork from '@/components/icons/Firework';
+import Goven from '@/components/icons/Goven';
+import Seo from '@/components/Seo';
 import StoreRanking from '@/components/StoreRanking';
-import { weekStoreRanking, weekStoreRankingLower } from '@/data/dashboard';
-import DateTypeToggle from '@/components/DateTypeToggle';
 import TodayWeather from '@/components/TodayWeather';
+import { weekStoreRanking, weekStoreRankingLower } from '@/data/dashboard';
+import { getRandomInRange } from '@/util/rangeRandom';
 
 const DashboardWrapper = styled.main`
   padding-bottom: 1.6rem;
@@ -106,8 +96,7 @@ const DashboardWrapper = styled.main`
 
 const baseDate = dayjs();
 
-export default function HomePage() {
-  const router = useRouter();
+const HomePage = () => {
   const [autoMutateData, setAutoMutateData] = useState([
     {
       label: 'on',
@@ -118,8 +107,6 @@ export default function HomePage() {
       value: 10,
     },
   ]);
-
-  const [dateType, setDateType] = useState('7일');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -158,7 +145,7 @@ export default function HomePage() {
                 <p className="total">
                   <span className="count">3,400</span> 대
                 </p>
-                <p className="updatedAt"></p>
+                <p className="updatedAt" />
               </div>
               <div className="inline-flex relative aspect-square w-[12.2rem] md:w-[16rem] ml-[5.2rem]">
                 <PieChart
@@ -242,7 +229,7 @@ export default function HomePage() {
             title="30일간 평균 가동 횟수 그래프"
             sub={baseDate.format('YYYY.MM.DD')}
           >
-            <RecentCountChart type={'month'} className="w-full" />
+            <RecentCountChart type="month" className="w-full" />
           </Card>
         </div>
 
@@ -288,37 +275,37 @@ export default function HomePage() {
         <div className="flex flex-wrap gap-[0.8rem]">
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title={'7일간 가동률 상위매장 TOP 3'}
+            title="7일간 가동률 상위매장 TOP 3"
             sub={baseDate.format('YYYY.MM.DD')}
             storeData={weekStoreRanking}
           />
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title={'7일간 가동률 하위매장 TOP 3'}
+            title="7일간 가동률 하위매장 TOP 3"
             sub={baseDate.format('YYYY.MM.DD')}
             storeData={weekStoreRankingLower}
           />
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title={'7일간 가동률+조리횟수 상위매장 TOP 3'}
+            title="7일간 가동률+조리횟수 상위매장 TOP 3"
             sub={baseDate.format('YYYY.MM.DD')}
             storeData={weekStoreRanking}
           />
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title={'7일간 가동률+조리횟수 하위매장 TOP 3'}
+            title="7일간 가동률+조리횟수 하위매장 TOP 3"
             sub={baseDate.format('YYYY.MM.DD')}
             storeData={weekStoreRankingLower}
           />
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title={'7일간 전월대비 가동률 상위매장 TOP 3'}
+            title="7일간 전월대비 가동률 상위매장 TOP 3"
             sub={baseDate.format('YYYY.MM.DD')}
             storeData={weekStoreRanking}
           />
           <StoreRanking
             className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title={'7일간 전월대비 가동률 하위매장 TOP 3'}
+            title="7일간 전월대비 가동률 하위매장 TOP 3"
             sub={baseDate.format('YYYY.MM.DD')}
             storeData={weekStoreRankingLower}
           />
@@ -326,4 +313,6 @@ export default function HomePage() {
       </DashboardWrapper>
     </>
   );
-}
+};
+
+export default HomePage;

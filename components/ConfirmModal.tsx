@@ -49,10 +49,10 @@ const ConfirmModal = ({ onConfirm, onClose, text, ...modalProps }: Props) => {
         <p className="text">{text}</p>
 
         <div className="buttons">
-          <button className="confirm" onClick={() => onConfirm()}>
+          <button type="button" className="confirm" onClick={() => onConfirm()}>
             저장
           </button>
-          <button className="cancel" onClick={() => onClose?.()}>
+          <button type="button" className="cancel" onClick={() => onClose?.()}>
             취소
           </button>
         </div>
@@ -71,7 +71,7 @@ export const AlertModal = ({
       <ConfirmWrapper className="max-w-[32.8rem] w-full ">
         <p className="text">{text}</p>
         <div className="buttons">
-          <button className="confirm" onClick={() => onClose?.()}>
+          <button type="button" className="confirm" onClick={() => onClose?.()}>
             확인
           </button>
         </div>

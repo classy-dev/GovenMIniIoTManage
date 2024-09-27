@@ -1,8 +1,7 @@
-import { StoreInfomation } from '@/data/storeInfo';
-import { mq } from '@/styles/responsive';
 import styled from '@emotion/styled';
-import StoreListItem from './StoreListItem';
 import Warning from '@/components/icons/Warning';
+import { StoreInfomation } from '@/data/storeInfo';
+import StoreListItem from './StoreListItem';
 
 const StoreListWrapper = styled.div`
   display: flex;

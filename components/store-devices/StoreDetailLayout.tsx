@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router';
-import StoreLayout from './StoreLayout';
 import { useMemo } from 'react';
-import { storeInfoList } from '@/data/storeInfo';
+import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
+import { storeInfoList } from '@/data/storeInfo';
 import StoreDetailTabs from './StoreDetailTab';
+import StoreLayout from './StoreLayout';
 import Seo from '../Seo';
 
 const DetailWrapper = styled.div`
@@ -19,9 +19,7 @@ const StoreDetailLayout = ({
 }: React.PropsWithChildren<{ onSave?: () => void }>) => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
-  const store = storeInfoList.find(
-    store => store.machinery_minigoven_idx === id
-  );
+  const store = storeInfoList.find(s => s.machinery_minigoven_idx === id);
 
   return (
     <>

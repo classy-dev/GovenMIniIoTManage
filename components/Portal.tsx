@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 
 const Portal = ({ children }: React.PropsWithChildren) => {
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
