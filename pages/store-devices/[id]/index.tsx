@@ -6,8 +6,8 @@ import TemperatureChart from '@/components/chart/TemperatureChart';
 import { flicker } from '@/components/icons/Firework';
 import Fire, { FireOff } from '@/components/icons/Temperature';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
+import temperature_json from '@/data/temperature_data_2024_09_11.json';
 import useDeviceInfo from '@/hooks/useDeviceInfo';
-import temperature_json from '@/temperature_data_2024_09_11.json';
 
 type mockData = {
   date: string;

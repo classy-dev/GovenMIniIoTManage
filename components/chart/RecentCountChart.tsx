@@ -7,7 +7,6 @@ import { scaleLinear, scaleBand } from '@visx/scale';
 import { AreaClosed, Line, LinePath } from '@visx/shape';
 import { max } from '@visx/vendor/d3-array';
 import dayjs from 'dayjs';
-import { weekCountData, monthCountData } from '@/data/dashboard';
 import ResponsiveContainer from './ResponsiveContainer';
 
 export const background = '#fff';
@@ -25,12 +24,14 @@ const getValue = (data: ChartData) => data.value;
 
 export type AreaProps = {
   type: 'week' | 'month';
+  data: ChartData[];
   className?: string;
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
 const RecentCountChart = ({
   type,
+  data,
   className,
   margin = { top: 36, right: 16, bottom: 16, left: 32 },
 }: AreaProps) => {
@@ -39,27 +40,27 @@ const RecentCountChart = ({
   // bounds
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
-  const mockup = type === 'week' ? weekCountData : monthCountData;
+  // const mockup = type === 'week' ? weekCountData : monthCountData;
 
   const XScale = useMemo(
     () =>
       scaleBand({
-        domain: mockup.map(getDate),
+        domain: data.map(getDate),
         range: [0, innerWidth],
         paddingInner: 1,
         paddingOuter: 0,
       }),
-    [innerWidth, margin.left, mockup]
+    [innerWidth, margin.left, data]
   );
 
   const YScale = useMemo(
     () =>
       scaleLinear({
         range: [innerHeight, 0],
-        domain: [0, Math.max(max(mockup, getValue) ?? 0, 230)],
+        domain: [0, Math.max(max(data, getValue) ?? 0, 230)],
         nice: true,
       }),
-    [margin.top, innerHeight, mockup]
+    [margin.top, innerHeight, data]
   );
 
   const guideY = useMemo(() => YScale(230), [YScale]);
@@ -100,7 +101,7 @@ const RecentCountChart = ({
             toOpacity={0}
           />
           <LinePath<ChartData>
-            data={mockup}
+            data={data}
             y={d => YScale(getValue(d)) ?? 0}
             x={d => XScale(getDate(d)) ?? 0}
             strokeWidth={2}
@@ -108,7 +109,7 @@ const RecentCountChart = ({
             curve={curveLinear}
           />
           <AreaClosed<ChartData>
-            data={mockup}
+            data={data}
             y={d => YScale(getValue(d)) ?? 0}
             x={d => XScale(getDate(d)) ?? 0}
             yScale={YScale}

@@ -57,7 +57,7 @@ const StoreDevices = () => {
   );
 
   useEffect(() => {
-    setFilter(filter => ({ ...filter, status: qs.get('p')?.toUpperCase() }));
+    setFilter(f => ({ ...f, status: qs.get('p')?.toUpperCase() }));
   }, []);
 
   useEffect(() => {
