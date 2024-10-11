@@ -165,7 +165,6 @@ const StoreDetail = () => {
     [data?.iot_info.power_status]
   );
 
-  console.log('error', error);
   useEffect(() => {
     if (!data) return () => {};
     if (isON) setTime(Number(data?.iot_info.power_running_time));

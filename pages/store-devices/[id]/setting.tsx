@@ -154,7 +154,14 @@ const Setting = () => {
             <dd>{isInstalled ? '완료' : ''}</dd>
           </dl>
         </div>
-        <form ref={formRef} onSubmit={handleSubmit(() => setShowConfirm(true))}>
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit(() => {
+            console.log('form submit');
+
+            setShowConfirm(true);
+          })}
+        >
           <div className="field">
             <span className="label">예열 온도</span>
             <div className="input-wrapper justify-end">
@@ -231,7 +238,7 @@ const Setting = () => {
             </div>
           </div>
           <button
-            type="button"
+            type="submit"
             disabled={!isPowerOn}
             className="h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white disabled:cursor-not-allowed"
           >
