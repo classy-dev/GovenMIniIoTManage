@@ -78,5 +78,4 @@ const StoreList = ({ data, onClickStore, isLoading }: StoreListProps) => {
     </StoreListWrapper>
   );
 };
-
 export default StoreList;
