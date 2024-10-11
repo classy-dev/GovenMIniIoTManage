@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
-import { StoreInfomation } from '@/data/storeInfo';
+import { StoreListData } from '@/api/device';
 import { mq } from '@/styles/responsive';
 
 const StoreItemWrapper = styled.div`
@@ -124,28 +124,24 @@ const StoreItemWrapper = styled.div`
 
 interface StoreListItemProps {
   status: string;
-  info: StoreInfomation;
-  onClick: (info: StoreInfomation) => void;
+  info: StoreListData;
+  onClick: (info: StoreListData) => void;
 }
-
-const currentTime = dayjs();
 
 const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
   const disabled = status === 'none';
   const [time, setTime] = useState(0);
-  const onTime = dayjs(info.on_time);
-  const diff = info.on_time ? currentTime.diff(onTime, 'second') : null;
 
   useEffect(() => {
-    if (![1, 2].includes(info.power_status)) return () => {};
+    if (![1, 2].includes(info.iot_info.power_status)) return () => {};
 
-    setTime(diff ?? 0);
+    setTime(Number(info.iot_info.power_running_time) ?? 0);
     const timer = window.setInterval(() => {
       setTime(prev => prev + 1);
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [diff, info.power_status]);
+  }, [info.iot_info]);
 
   return (
     <StoreItemWrapper
@@ -166,13 +162,19 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
         </time>
       </div>
       <div className="info">
-        <span className="serial">{info.barcode}</span>
-        <span className="store">{info.installed_store}</span>
+        <span className="serial">{info.device_info.barcode}</span>
+        <span className="store">{info.store_info.store_name}</span>
         <dl className="data">
           <dt>현재 온도</dt>
-          <dd>{status === 'on' ? '230℃' : status === 'off' ? '0℃' : '--℃'}</dd>
+          <dd>
+            {status === 'on'
+              ? `${info.iot_info.temp}℃`
+              : status === 'off'
+                ? '0℃'
+                : '--℃'}
+          </dd>
           <dt>총 동작 수</dt>
-          <dd>{status === 'none' ? '--회' : '36회'}</dd>
+          <dd>{status === 'none' ? '--회' : `${info.iot_info.acting}회`}</dd>
         </dl>
       </div>
     </StoreItemWrapper>

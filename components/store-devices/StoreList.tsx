@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
+import { StoreListData } from '@/api/device';
 import Warning from '@/components/icons/Warning';
-import { StoreInfomation } from '@/data/storeInfo';
+import SkeletonLoadingList from '@/components/skeleton/SkeletonStoreList';
+import useDelayedLoading from '@/hooks/useDelayedLoading';
+import StoreEmpty from './StoreEmpty';
 import StoreListItem from './StoreListItem';
 
 const StoreListWrapper = styled.div`
@@ -29,29 +32,43 @@ const StoreListWrapper = styled.div`
 `;
 
 interface StoreListProps {
-  data?: StoreInfomation[];
-  onClickStore?: (store: StoreInfomation) => void;
+  isLoading: boolean;
+  data?: StoreListData[];
+  onClickStore?: (store: StoreListData) => void;
 }
 
-const StoreList = ({ data, onClickStore }: StoreListProps) => {
+const StoreList = ({ data, onClickStore, isLoading }: StoreListProps) => {
+  const loading = useDelayedLoading(isLoading, 300);
+
+  if (loading)
+    return (
+      <StoreListWrapper>
+        <SkeletonLoadingList />
+      </StoreListWrapper>
+    );
+
+  if (isLoading) return <StoreListWrapper />;
+
   if (!data?.length)
     return (
       <StoreListWrapper>
-        <div className="empty">
+        <StoreEmpty>
           <Warning />
           <h3>조회된 매장이 없습니다.</h3>
-        </div>
+        </StoreEmpty>
       </StoreListWrapper>
     );
 
   return (
     <StoreListWrapper>
       {data?.map((store, i) => {
-        const status = ['none', 'off', 'on'].at(store.power_status);
+        const status = ['none', 'off', 'on'].at(store.iot_info.power_status);
 
         return (
           <StoreListItem
-            key={store.machinery_minigoven_idx}
+            key={
+              store.device_info.govenmini_iot_idx || store.store_info.store_idx
+            }
             status={status ?? 'none'}
             info={store}
             onClick={() => onClickStore?.(store)}

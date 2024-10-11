@@ -107,7 +107,7 @@ const Setting = () => {
   const { data } = useDeviceSettingInfo(id);
 
   const { mutate } = useMutation(
-    (data: FormData) => updateDeviceSettingInfo(id, data),
+    (formData: FormData) => updateDeviceSettingInfo(id, formData),
     {
       onSuccess: () => {
         setShowConfirm(false);
@@ -154,10 +154,7 @@ const Setting = () => {
             <dd>{isInstalled ? '완료' : ''}</dd>
           </dl>
         </div>
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit(data => setShowConfirm(true))}
-        >
+        <form ref={formRef} onSubmit={handleSubmit(() => setShowConfirm(true))}>
           <div className="field">
             <span className="label">예열 온도</span>
             <div className="input-wrapper justify-end">

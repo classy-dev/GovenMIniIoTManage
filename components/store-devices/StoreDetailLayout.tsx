@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
-import { storeInfoList } from '@/data/storeInfo';
+import useDeviceInfo from '@/hooks/useDeviceInfo';
 import StoreDetailTabs from './StoreDetailTab';
 import StoreLayout from './StoreLayout';
 import Seo from '../Seo';
@@ -19,19 +19,24 @@ const StoreDetailLayout = ({
 }: React.PropsWithChildren<{ onSave?: () => void }>) => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
-  const store = storeInfoList.find(s => s.machinery_minigoven_idx === id);
+
+  const { data, error } = useDeviceInfo(id);
 
   return (
     <>
       <Seo
-        title={`${store?.installed_store ?? ''} | GOVEN MINI`}
+        title={`${data?.store_info.store_name ?? ''} ${error ? 'Not Found' : ''} | GOVEN MINI`}
         description=""
         image=""
         url=""
       />
-      <StoreLayout title={store?.installed_store} passQuery onSave={onSave}>
+      <StoreLayout
+        title={data?.store_info.store_name}
+        passQuery
+        onSave={onSave}
+      >
         <DetailWrapper>
-          <StoreDetailTabs />
+          <StoreDetailTabs disabled={!!error} />
           {children}
         </DetailWrapper>
       </StoreLayout>

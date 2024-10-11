@@ -1,7 +1,8 @@
 import request from './request';
 
-type ProductionInfo = {
+type DeviceInfo = {
   machinery_minigoven_idx: number;
+  govenmini_iot_idx: number;
   barcode: string;
   production_dt: string;
   packing_dt: string;
@@ -11,6 +12,7 @@ type ProductionInfo = {
 };
 
 type StoreInfo = {
+  store_idx: number;
   store_name: string;
   store_type: string;
   external_store_code: string;
@@ -36,10 +38,16 @@ type SettingInfo = {
   power_status?: number;
 };
 
+export type StoreListData = {
+  device_info: DeviceInfo;
+  store_info: StoreInfo;
+  iot_info: IoTInfo;
+};
+
 export const fetchDeviceInfo = async (machinery_minigoven_idx: Identifier) => {
   const res = await request.get<
     ServerResponse<{
-      production_info: ProductionInfo;
+      production_info: DeviceInfo;
       store_info: StoreInfo;
       iot_info: IoTInfo;
     }>
@@ -68,6 +76,22 @@ export const updateDeviceSettingInfo = async (
     `/mc/v2/iot/govenmini/detail/${machinery_minigoven_idx}/controller`,
     formData
   );
+
+  return res.data.data;
+};
+
+export const fetchDeviceList = async (params: {
+  per_number: number;
+  current_number: number;
+  src_keyword: string;
+  power_status: number;
+}) => {
+  const res = await request.get<
+    ServerResponse<{
+      total_count: number;
+      list: StoreListData[];
+    }>
+  >(`/mc/v2/iot/govenmini/store`, { params });
 
   return res.data.data;
 };

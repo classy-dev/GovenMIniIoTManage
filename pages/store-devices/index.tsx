@@ -1,6 +1,9 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useInfiniteQuery } from 'react-query';
 import styled from '@emotion/styled';
+import { fetchDeviceList, StoreListData } from '@/api/device';
+import Spinner from '@/components/icons/Spinner';
 import Seo from '@/components/Seo';
 import StoreFilter, {
   StoreFilterData,
@@ -8,8 +11,6 @@ import StoreFilter, {
 // import StoreFilter from '@/components/store-devices/StoreFilter';
 import StoreLayout from '@/components/store-devices/StoreLayout';
 import StoreList from '@/components/store-devices/StoreList';
-import { storeInfoList } from '@/data/storeInfo';
-import useChosungFilter from '@/hooks/useChosungFilter';
 import useSearchParamsFromRouter from '@/hooks/useSearchParamsFromRouter';
 import { mq } from '@/styles/responsive';
 
@@ -19,6 +20,21 @@ const StoreDeviceListWrapper = styled.div`
   justify-content: flex-start;
   gap: 1.6rem;
   padding: 1.6rem;
+
+  .more-btn {
+    margin: 2rem 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 5.2rem;
+    max-width: 500px;
+    border-radius: 3.2rem;
+    text-align: center;
+    background-color: #fa4616;
+    color: #fff;
+    font-weight: bold;
+  }
 
   ${mq.md} {
     padding-top: 6.2rem;
@@ -33,22 +49,37 @@ const StoreDevices = () => {
     keyword: '',
   });
 
-  const searchResult = useChosungFilter(
-    filter.keyword,
-    storeInfoList,
-    store => store.installed_store
-  );
+  const { data, isLoading, isFetching, hasNextPage, fetchNextPage } =
+    useInfiniteQuery(
+      ['storeList', filter],
+      ({ pageParam = 1 }) =>
+        fetchDeviceList({
+          current_number: pageParam,
+          per_number: 20,
+          src_keyword: filter.keyword,
+          power_status:
+            !filter.status || filter.status === 'none'
+              ? 0
+              : filter.status === 'ON'
+                ? 2
+                : 1,
+        }),
+      {
+        getNextPageParam: (response, allPages) => {
+          const maxPageNumber = Math.ceil(response.total_count / 20);
+          if (maxPageNumber < allPages.length + 1) return undefined;
+          return allPages.length + 1;
+        },
+        enabled: !!router.isReady,
+      }
+    );
 
-  const searchedList = useMemo(
+  const list = useMemo(
     () =>
-      searchResult.filter(store =>
-        !filter.status || filter.status === 'none'
-          ? true
-          : filter.status === 'ON'
-            ? store.power_status === 2
-            : store.power_status === 1
+      ([] as StoreListData[]).concat(
+        ...(data?.pages.map(res => res.list) ?? [])
       ),
-    [filter]
+    [data]
   );
 
   const search = useMemo(
@@ -82,13 +113,33 @@ const StoreDevices = () => {
       />
       <StoreDeviceListWrapper>
         <StoreList
-          data={searchedList}
+          isLoading={isLoading || !router.isReady}
+          data={list}
           onClickStore={store =>
             router.push(
-              `/store-devices/${store.machinery_minigoven_idx}?${search}`
+              `/store-devices/${store.device_info.govenmini_iot_idx}?${search}`
             )
           }
         />
+
+        {hasNextPage && (
+          <button
+            type="button"
+            disabled={isFetching}
+            className="w-full max-w-lg h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white transition-all duration-300 ease-in-out
+            disabled:bg-opacity-50 disabled:cursor-not-allowed self-center hover:bg-[#E13D10] active:bg-[#D23407]"
+            onClick={() => fetchNextPage()}
+          >
+            {isFetching ? (
+              <>
+                <span className="mr-2">불러오는중</span>
+                <Spinner size={16} className="inline-flex" />
+              </>
+            ) : (
+              '더 보기'
+            )}
+          </button>
+        )}
       </StoreDeviceListWrapper>
     </StoreLayout>
   );

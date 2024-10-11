@@ -14,12 +14,12 @@ interface BasicInfo {
   store_in_operation_rate: number;
 }
 
-interface GraphData {
+export interface GraphData {
   date: string;
   [key: string]: string | number;
 }
 
-interface StoreListItem {
+export interface StoreListItem {
   store_idx: number;
   store_name: string;
   [key: string]: string | number;

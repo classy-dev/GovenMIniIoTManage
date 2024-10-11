@@ -33,15 +33,12 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       defaultOptions: {
         queries: {
           refetchOnWindowFocus: false,
-          retry: true,
+          retry: false,
+          onError: e => console.log(e),
         },
       },
-      queryCache: new QueryCache({
-        // onError: errorHandler,
-      }),
-      mutationCache: new MutationCache({
-        // onError: errorHandler,
-      }),
+      queryCache: new QueryCache(),
+      mutationCache: new MutationCache(),
     })
   );
   const renderPage = useMemo(

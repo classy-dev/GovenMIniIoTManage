@@ -27,7 +27,7 @@ const TabWrapper = styled.div`
   }
 `;
 
-const StoreDetailTabs = () => {
+const StoreDetailTabs = ({ disabled = false }) => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
   const [pathname, search] = useMemo(
@@ -45,9 +45,11 @@ const StoreDetailTabs = () => {
     <TabWrapper>
       {tabPaths.map(tab => (
         <Link
+          aria-disabled={disabled}
           key={tab.path}
           href={`${tab.path}?${search}`}
-          className={`tab-item ${tab.path === pathname ? 'active' : ''}`}
+          onClick={e => (disabled ? e.preventDefault() : '')}
+          className={`tab-item ${tab.path === pathname ? 'active' : ''}  aria-disabled:!cursor-not-allowed`}
         >
           {tab.label}
         </Link>

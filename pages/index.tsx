@@ -4,9 +4,8 @@ import styled from '@emotion/styled';
 import BasicInfo from '@/components/dashboard/BasicInfo';
 import RunAvgCount from '@/components/dashboard/RunAvgCount';
 import StoreInfo from '@/components/dashboard/StoreInfo';
+import StoreRankings from '@/components/dashboard/StoreRankings';
 import Seo from '@/components/Seo';
-import StoreRanking from '@/components/StoreRanking';
-import { weekStoreRanking, weekStoreRankingLower } from '@/data/dashboard';
 
 const DashboardWrapper = styled.main`
   padding-bottom: 1.6rem;
@@ -40,7 +39,6 @@ const DashboardWrapper = styled.main`
     display: inline-flex;
     align-items: baseline;
     font-size: 1.4rem;
-    /* margin-bottom: 0.8rem; */
   }
 
   .count {
@@ -89,8 +87,6 @@ const DashboardWrapper = styled.main`
   }
 `;
 
-const baseDate = dayjs();
-
 const HomePage = () => {
   return (
     <>
@@ -99,68 +95,13 @@ const HomePage = () => {
         <BasicInfo />
         <div className="flex flex-wrap gap-[0.8rem]">
           {/** 평균 가동 횟수 그래프 */}
-
           <RunAvgCount dateType="7" />
           <RunAvgCount dateType="30" />
         </div>
 
         {/** 일자별 매장 수 & 평균 가동 시간 */}
         <StoreInfo baseDate={dayjs()} />
-        <div className="flex gap-[0.8rem] text-[1.4rem] flex-wrap">
-          {/* <Card
-            title="일자별 매장 수"
-            className="flex-none w-full md:flex-1"
-            sub={baseDate.format('YYYY.MM.DD')}
-          >
-            <BarChart className="w-full" data={[]} />
-          </Card>
-          <Card
-            title="평균 가동 시간"
-            className="flex-none w-full md:flex-1"
-            sub={baseDate.format('YYYY.MM.DD')}
-          >
-            <BarChart className="w-full" data={[]} />
-          </Card> */}
-        </div>
-
-        <div className="flex flex-wrap gap-[0.8rem]">
-          <StoreRanking
-            className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title="7일간 가동률 상위매장 TOP 3"
-            sub={baseDate.format('YYYY.MM.DD')}
-            storeData={weekStoreRanking}
-          />
-          <StoreRanking
-            className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title="7일간 가동률 하위매장 TOP 3"
-            sub={baseDate.format('YYYY.MM.DD')}
-            storeData={weekStoreRankingLower}
-          />
-          <StoreRanking
-            className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title="7일간 가동률+조리횟수 상위매장 TOP 3"
-            sub={baseDate.format('YYYY.MM.DD')}
-            storeData={weekStoreRanking}
-          />
-          <StoreRanking
-            className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title="7일간 가동률+조리횟수 하위매장 TOP 3"
-            sub={baseDate.format('YYYY.MM.DD')}
-            storeData={weekStoreRankingLower}
-          />
-          <StoreRanking
-            className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title="7일간 전월대비 가동률 상위매장 TOP 3"
-            sub={baseDate.format('YYYY.MM.DD')}
-            storeData={weekStoreRanking}
-          />
-          <StoreRanking
-            className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-            title="7일간 전월대비 가동률 하위매장 TOP 3"
-            sub={baseDate.format('YYYY.MM.DD')}
-            storeData={weekStoreRankingLower}
-          />
-        </div>
+        <StoreRankings />
       </DashboardWrapper>
     </>
   );

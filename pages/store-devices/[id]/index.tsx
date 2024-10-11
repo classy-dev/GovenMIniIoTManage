@@ -5,7 +5,10 @@ import styled from '@emotion/styled';
 import TemperatureChart from '@/components/chart/TemperatureChart';
 import { flicker } from '@/components/icons/Firework';
 import Fire, { FireOff } from '@/components/icons/Temperature';
+import Warning from '@/components/icons/Warning';
+import SkeletonStoreDetail from '@/components/skeleton/SkeletonStoreDetail';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
+import StoreEmpty from '@/components/store-devices/StoreEmpty';
 import temperature_json from '@/data/temperature_data_2024_09_11.json';
 import useDeviceInfo from '@/hooks/useDeviceInfo';
 
@@ -155,13 +158,14 @@ const StoreDetail = () => {
   const [time, setTime] = useState(0);
   const [currentTime, setCurrentTime] = useState('');
 
-  const { data } = useDeviceInfo(id);
+  const { data, isLoading, error } = useDeviceInfo(id);
 
   const isON = useMemo(
     () => data?.iot_info.power_status === 2,
     [data?.iot_info.power_status]
   );
 
+  console.log('error', error);
   useEffect(() => {
     if (!data) return () => {};
     if (isON) setTime(Number(data?.iot_info.power_running_time));
@@ -173,6 +177,32 @@ const StoreDetail = () => {
 
     return () => window.clearInterval(timer);
   }, [data?.iot_info.power_running_time, isON]);
+
+  if (isLoading || !router.isReady) {
+    return (
+      <TemperatureWrapper>
+        <SkeletonStoreDetail />
+      </TemperatureWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <TemperatureWrapper>
+        <StoreEmpty>
+          <Warning />
+          <h3>
+            모듈을 <br />
+            찾을 수 없습니다.
+          </h3>
+          <p>
+            모듈이 없어 화면을 확인 할 수 없습니다.
+            <br /> 설치 여부를 확인해주세요.
+          </p>
+        </StoreEmpty>
+      </TemperatureWrapper>
+    );
+  }
 
   return (
     <TemperatureWrapper>
@@ -200,7 +230,7 @@ const StoreDetail = () => {
       <div className="device-info">
         <dl>
           <dt>매장코드</dt>
-          <dd>{data?.store_info.external_store_code}</dd>
+          <dd>{data?.store_info.external_store_code?.padStart(1, '-')}</dd>
         </dl>
         <dl>
           <dt>시리얼 넘버</dt>
