@@ -70,7 +70,7 @@
     "react/jsx-one-expression-per-line": 0,
     "no-nested-ternary": 0,
     "no-unused-vars": [
-      "error",
+      "warn",
       { "vars": "all", "args": "none", "ignoreRestSiblings": false }
     ],
     "unused-imports/no-unused-imports-ts": ["error"],
