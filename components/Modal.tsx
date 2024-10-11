@@ -100,7 +100,13 @@ const Modal = ({
     <Portal>
       <ModalStyle aria-hidden={show ? 'false' : 'true'} role="dialog">
         {/** Dim */}
-        <div className="dim" onClick={onClose} />
+        <div
+          role="button"
+          aria-label="Close Modal"
+          tabIndex={0}
+          className="dim"
+          onClick={onClose}
+        />
         <div className="content">
           {children}
           {/** Close Button */}
