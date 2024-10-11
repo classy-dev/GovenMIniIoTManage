@@ -1,7 +1,6 @@
 import request from './request';
 
 type DeviceInfo = {
-  machinery_minigoven_idx: number;
   govenmini_iot_idx: number;
   barcode: string;
   production_dt: string;
@@ -44,38 +43,68 @@ export type StoreListData = {
   iot_info: IoTInfo;
 };
 
-export const fetchDeviceInfo = async (machinery_minigoven_idx: Identifier) => {
+export const fetchDeviceInfo = async (govenmini_iot_idx: Identifier) => {
   const res = await request.get<
     ServerResponse<{
       production_info: DeviceInfo;
       store_info: StoreInfo;
       iot_info: IoTInfo;
     }>
-  >(`/mc/v2/iot/govenmini/detail/${machinery_minigoven_idx}/info`);
+  >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/info`);
 
   return res.data.data;
 };
 
-export const fetchDeviceSettingInfo = async (
-  machinery_minigoven_idx: Identifier
+export const fetchDeviceTemperatureData = async (
+  govenmini_iot_idx: Identifier
 ) => {
+  const res = await request.get<
+    ServerResponse<{
+      graph: {
+        datetime: number;
+        temp: string;
+      }[];
+    }>
+  >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/info/graph`, {
+    params: {
+      total_seconds: 60,
+    },
+  });
+
+  return res.data.data;
+};
+
+export const fetchDeviceHistory = async (
+  govenmini_iot_idx: Identifier,
+  date: string
+) => {
+  const res = await request.get<
+    ServerResponse<
+      {
+        time: string;
+        text: string;
+      }[]
+    >
+  >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/history/${date}`);
+
+  return res.data.data;
+};
+
+export const fetchDeviceSettingInfo = async (govenmini_iot_idx: Identifier) => {
   const res = await request.get<ServerResponse<SettingInfo>>(
-    `/mc/v2/iot/govenmini/detail/${machinery_minigoven_idx}/controller`
+    `/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/controller`
   );
 
   return res.data.data;
 };
 
 export const updateDeviceSettingInfo = async (
-  machinery_minigoven_idx: number,
+  govenmini_iot_idx: number,
   formData: Omit<SettingInfo, 'power_status'>
 ) => {
   const res = await request.put<
     ServerResponse<Omit<SettingInfo, 'power_status'>>
-  >(
-    `/mc/v2/iot/govenmini/detail/${machinery_minigoven_idx}/controller`,
-    formData
-  );
+  >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/controller`, formData);
 
   return res.data.data;
 };

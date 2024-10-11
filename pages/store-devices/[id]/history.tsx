@@ -1,16 +1,13 @@
-import { ReactElement } from 'react';
+import { ReactElement, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
 import styled from '@emotion/styled';
+import { fetchDeviceHistory } from '@/api/device';
 import ArrowRight from '@/components/icons/ArrowRight';
+import Warning from '@/components/icons/Warning';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
-import historymockup from '@/data/history.json';
-
-type HistoryData = {
-  date: string;
-  oven_operation_history: { time: string; action: string }[];
-};
-
-const data = historymockup as unknown as HistoryData;
+import StoreEmpty from '@/components/store-devices/StoreEmpty';
 
 const HistoryWrapper = styled.div`
   display: flex;
@@ -52,12 +49,14 @@ const HistoryWrapper = styled.div`
   }
 
   .content {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
     padding-top: 1.4rem;
     width: 100%;
     overflow: auto;
+    line-height: 1.25;
     li {
       display: flex;
       gap: 0.8rem;
@@ -66,28 +65,71 @@ const HistoryWrapper = styled.div`
 
   time {
     color: #fa4616;
+    width: 4.3rem;
   }
 `;
 
+const today = dayjs();
 const History = () => {
+  const router = useRouter();
+  const [date, setDate] = useState<dayjs.Dayjs>(today);
+
+  const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
+
+  const { data, isLoading } = useQuery(
+    ['device-history', id, date],
+    () => fetchDeviceHistory(id, date.format('YYYY-MM-DD')),
+    {
+      keepPreviousData: false,
+    }
+  );
+
   return (
     <HistoryWrapper>
       <div className="date">
-        <button type="button" aria-label="left" className="left">
+        <button
+          type="button"
+          aria-label="left"
+          className="left"
+          onClick={() => setDate(date.add(-1, 'day'))}
+        >
           <ArrowRight />
         </button>
-        <span>{dayjs(data.date).format('YYYY-MM-DD')}</span>
-        <button type="button" aria-label="right" className="right">
+        <span>{date.format('YYYY-MM-DD')}</span>
+        <button
+          type="button"
+          aria-label="right"
+          className="right"
+          onClick={() => setDate(date.add(1, 'day'))}
+          disabled={today.format('YYYYMMDD') === date.format('YYYYMMDD')}
+        >
           <ArrowRight />
         </button>
       </div>
       <ul className="content">
-        {data.oven_operation_history.map((history, i) => (
-          <li key={i}>
-            <time>{history.time}</time>
-            <span>{history.action}</span>
-          </li>
-        ))}
+        {data
+          ?.slice(0)
+          .sort(
+            (a, b) =>
+              dayjs(`1970-01-01 ${a.time}`).unix() -
+              dayjs(`1970-01-01 ${b.time}`).unix()
+          )
+          .map(history => (
+            <li key={history.time}>
+              <time>{dayjs(`1970-01-01 ${history.time}`).format('HH:mm')}</time>
+              <span>{history.text}</span>
+            </li>
+          ))}
+
+        {!data ||
+          (data.length === 0 && (
+            <li key="empty">
+              <StoreEmpty>
+                <Warning />
+                <p>조회된 변동 내역이 없습니다.</p>
+              </StoreEmpty>
+            </li>
+          ))}
       </ul>
     </HistoryWrapper>
   );

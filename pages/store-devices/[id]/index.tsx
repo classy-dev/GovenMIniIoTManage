@@ -11,6 +11,7 @@ import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
 import StoreEmpty from '@/components/store-devices/StoreEmpty';
 import temperature_json from '@/data/temperature_data_2024_09_11.json';
 import useDeviceInfo from '@/hooks/useDeviceInfo';
+import useDeviceTempData from '@/hooks/useDeviceTempData';
 
 type mockData = {
   date: string;
@@ -159,6 +160,7 @@ const StoreDetail = () => {
   const [currentTime, setCurrentTime] = useState('');
 
   const { data, isLoading, error } = useDeviceInfo(id);
+  const { data: tempData } = useDeviceTempData(id);
 
   const isON = useMemo(
     () => data?.iot_info.power_status === 2,

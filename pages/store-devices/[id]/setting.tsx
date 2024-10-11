@@ -116,7 +116,7 @@ const Setting = () => {
     }
   );
 
-  const { handleSubmit, control, watch, reset, getValues } = useForm<FormData>({
+  const { handleSubmit, control, reset, getValues } = useForm<FormData>({
     defaultValues: {
       pre_heat_temp: 0,
       cook_1: {
