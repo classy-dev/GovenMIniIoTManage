@@ -27,31 +27,37 @@ const StoreRankings = () => {
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="7일간 가동률 상위매장 TOP 3"
+        loading={uptimeRateDescending.isLoading}
         storeData={uptimeRateDescending.data?.list ?? []}
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="7일간 가동률 하위매장 TOP 3"
+        loading={uptimeRateAscending.isLoading}
         storeData={uptimeRateAscending.data?.list ?? []}
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="7일간 가동률+조리횟수 상위매장 TOP 3"
+        loading={uptimeRateWithCountDescending.isLoading}
         storeData={uptimeRateWithCountDescending.data?.list ?? []}
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="7일간 가동률+조리횟수 하위매장 TOP 3"
+        loading={uptimeRateWithCountAscending.isLoading}
         storeData={uptimeRateWithCountAscending.data?.list ?? []}
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="7일간 전월대비 가동률 상위매장 TOP 3"
+        loading={comparedMonthDesceding.isLoading}
         storeData={comparedMonthDesceding.data?.list ?? []}
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="7일간 전월대비 가동률 하위매장 TOP 3"
+        loading={comparedMonthAsceding.isLoading}
         storeData={comparedMonthAsceding.data?.list ?? []}
       />
     </div>

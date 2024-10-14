@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { StoreListItem } from '@/api/dashboard';
 import Card from './Card';
+import SkeletonRankList from './skeleton/SkeletonRankList';
 
 interface StoreRankingProps {
   className?: string;
   title?: string;
   sub?: string;
+  loading?: boolean;
   storeData: StoreListItem[];
 }
 
@@ -13,8 +15,13 @@ const StoreRanking = ({
   className,
   title,
   sub,
+  loading,
   storeData,
 }: StoreRankingProps) => {
+  if (loading) {
+    return <SkeletonRankList className={className} />;
+  }
+
   return (
     <Card title={title} sub={sub} className={className ?? ''}>
       {storeData.map((data, i) => {
@@ -28,6 +35,7 @@ const StoreRanking = ({
             href={`/store-devices/${data.machinery_minigoven_idx}`}
           >
             <div
+              key={data.store_idx}
               className={`flex justify-between items-center w-full ${
                 i !== 0 ? 'mt-[1.6rem]' : ''
               } text-[1.4rem]`}

@@ -194,7 +194,6 @@ export default withTooltip<Props, ChartData>(
 
       const index = bisectDate(transformedData, toDateString(x0), 1);
       const d0 = transformedData[index - 1];
-      // const d1 = transformedData[index];
       const d = d0;
 
       if (d) {

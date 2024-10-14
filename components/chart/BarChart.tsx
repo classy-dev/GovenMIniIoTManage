@@ -17,6 +17,7 @@ export type BarsProps = {
   defaultColor?: string;
   toptierColor?: string;
   className?: string;
+
   data: BarChartData[];
   margin?: { top: number; left: number; right: number; bottom: number };
 };

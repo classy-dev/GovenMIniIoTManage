@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 export interface CardProps {
   href?: string;
-  title?: string;
+  title?: ReactNode;
   sub?: ReactNode;
   className?: string;
 }
