@@ -157,7 +157,7 @@ const StoreDetail = () => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
   const [time, setTime] = useState(0);
-  const [currentTime, setCurrentTime] = useState('');
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const { data, isLoading, error } = useDeviceInfo(id);
   const { data: tempData } = useDeviceTempData(id);
@@ -170,10 +170,10 @@ const StoreDetail = () => {
   useEffect(() => {
     if (!data) return () => {};
     if (isON) setTime(Number(data?.iot_info.power_running_time));
-    setCurrentTime(dayjs().format('HH:mm:ss'));
+
     const timer = window.setInterval(() => {
       if (isON) setTime(val => val + 1);
-      setCurrentTime(dayjs().format('HH:mm:ss'));
+      setCurrentTime(new Date());
     }, 1000);
 
     return () => window.clearInterval(timer);
@@ -250,8 +250,7 @@ const StoreDetail = () => {
       </div>
       <TemperatureChart
         className="aspect-square md:aspect-video"
-        date={mockup.date}
-        data={mockup.data}
+        data={tempData?.graph ?? []}
         currentTemperature={parseInt(data?.iot_info.temp ?? '')}
         currentTime={currentTime}
       />

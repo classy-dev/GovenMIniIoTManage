@@ -61,15 +61,11 @@ export const fetchDeviceTemperatureData = async (
   const res = await request.get<
     ServerResponse<{
       graph: {
-        datetime: number;
-        temp: string;
+        datetime: string;
+        temp: number;
       }[];
     }>
-  >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/info/graph`, {
-    params: {
-      total_seconds: 60,
-    },
-  });
+  >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/info/graph`);
 
   return res.data.data;
 };
