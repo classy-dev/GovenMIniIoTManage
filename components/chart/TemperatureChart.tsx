@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { curveBasis } from '@visx/curve';
 import { localPoint } from '@visx/event';
@@ -8,7 +8,7 @@ import { scaleLinear, scalePoint, scaleTime } from '@visx/scale';
 import { AreaClosed, LinePath, Bar, Line } from '@visx/shape';
 import { withTooltip, Tooltip } from '@visx/tooltip';
 import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
-import { extent, bisector, mean, max } from '@visx/vendor/d3-array';
+import { extent, bisector, max } from '@visx/vendor/d3-array';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import ResponsiveContainer from './ResponsiveContainer';
@@ -133,6 +133,7 @@ export default withTooltip<Props, ChartData>(
                 temp: currentTemperature,
               },
             ],
+
       [extendedData, currentTemperature]
     );
 
