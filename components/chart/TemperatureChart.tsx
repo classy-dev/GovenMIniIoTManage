@@ -103,7 +103,7 @@ export default withTooltip<Props, ChartData>(
     tooltipData,
     showTooltip,
     hideTooltip,
-    margin = { top: 100, right: 36, bottom: 24, left: 30 },
+    margin = { top: 120, right: 36, bottom: 24, left: 30 },
     currentTemperature,
     currentTime,
     data,
@@ -219,9 +219,9 @@ export default withTooltip<Props, ChartData>(
       >
         {tooltipData && (
           <Tooltip
-            key={Math.random()}
-            top={margin.top - 85}
-            left={safetooltipLeft - 65}
+            key={tooltipData?.datetime}
+            top={margin.top - 65}
+            left={safetooltipLeft}
             applyPositionStyle
             style={{
               boxShadow: 'none',
@@ -229,18 +229,19 @@ export default withTooltip<Props, ChartData>(
               borderRadius: '0.8rem',
               padding: '1.1rem 2.2rem',
               background: '#3f3f3f',
+              transform: 'translate(calc(-50% - 1rem) , -50%)',
             }}
           >
             <TooltipStyle>
               <time>
                 {dayjs(
-                  tooltipData.display_time
+                  tooltipData?.display_time
                     ? tooltipData.display_time
-                    : getTime(tooltipData)
+                    : getTime(tooltipData ?? {})
                 ).format('YYYY.MM.DD HH:mm')}
               </time>
               <span className="temperature">
-                {getTemperature(tooltipData)}
+                {getTemperature(tooltipData ?? {})}
                 <span className="unit">°C</span>
               </span>
             </TooltipStyle>
