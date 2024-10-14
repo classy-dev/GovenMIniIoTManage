@@ -194,7 +194,7 @@ export default withTooltip<Props, ChartData>(
 
       const index = bisectDate(transformedData, toDateString(x0), 1);
       const d0 = transformedData[index - 1];
-      const d1 = transformedData[index];
+      // const d1 = transformedData[index];
       const d = d0;
 
       if (d) {
@@ -366,6 +366,18 @@ export default withTooltip<Props, ChartData>(
               cy={temperatureScale(currentTemperature) ?? 0}
             />
           </g>
+
+          <rect
+            x={0}
+            y={0}
+            fill="transparent"
+            width={innerWidth + margin.left + margin.right}
+            height={innerHeight + margin.top + margin.bottom}
+            onTouchStart={handleTooltip}
+            onTouchMove={handleTooltip}
+            onMouseMove={handleTooltip}
+            onMouseLeave={() => hideTooltip()}
+          />
         </svg>
       </ResponsiveContainer>
     );
