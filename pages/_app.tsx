@@ -3,6 +3,7 @@ import '@/styles/globals.css';
 
 import React, { useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
 import Script from 'next/script';
 import { AppPropsWithLayout } from 'next';
@@ -20,6 +21,7 @@ const LayoutWrapper = styled.div`
 `;
 
 dayjs.extend(utc);
+dayjs.extend(duration);
 
 const Layout = ({ children }: React.PropsWithChildren) => (
   <LayoutWrapper className="mx-auto text-center font-sans bg-white min-h-[100vh]">

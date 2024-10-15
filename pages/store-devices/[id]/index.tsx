@@ -12,6 +12,7 @@ import StoreEmpty from '@/components/store-devices/StoreEmpty';
 import temperature_json from '@/data/temperature_data_2024_09_11.json';
 import useDeviceInfo from '@/hooks/useDeviceInfo';
 import useDeviceTempData from '@/hooks/useDeviceTempData';
+import { formatSecondsToTime } from '@/util/time';
 
 type mockData = {
   date: string;
@@ -225,7 +226,7 @@ const StoreDetail = () => {
         </dl>
         <dl>
           <dt>현재 가동 시간</dt>
-          <dd>{dayjs.unix(time).utc().format('HH:mm:ss')}</dd>
+          <dd>{formatSecondsToTime(time)}</dd>
         </dl>
       </div>
       <div className="device-info">

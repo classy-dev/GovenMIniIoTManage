@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import { StoreListData } from '@/api/device';
 import { mq } from '@/styles/responsive';
+import { formatSecondsToTime } from '@/util/time';
 
 const StoreItemWrapper = styled.div`
   position: relative;
@@ -155,9 +155,7 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
       <div className="status">
         <span className="badge">{status}</span>
         <time>
-          {status === 'on' || status === 'off'
-            ? dayjs.unix(time).utc().format('HH:mm:ss')
-            : ''}
+          {status === 'on' || status === 'off' ? formatSecondsToTime(time) : ''}
           <br />
         </time>
       </div>
