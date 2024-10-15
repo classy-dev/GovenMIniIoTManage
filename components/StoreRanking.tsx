@@ -29,13 +29,13 @@ const StoreRanking = ({
 
         return (
           <Link
-            key={data.store_idx}
+            key={i}
             className="inline-flex w-full"
             scroll
             href={`/store-devices?q=${data.store_name}`}
           >
             <div
-              key={data.store_idx}
+              key={i}
               className={`flex justify-between items-center w-full ${
                 i !== 0 ? 'mt-[1.6rem]' : ''
               } text-[1.4rem]`}

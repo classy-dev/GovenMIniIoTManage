@@ -98,7 +98,7 @@ export const BarChart = ({
               : defaultColor;
 
             return (
-              <>
+              <React.Fragment key={i}>
                 <Text
                   x={barX + barWidth / 2}
                   y={barY - 6}
@@ -119,7 +119,7 @@ export const BarChart = ({
                   rx={6}
                   onClick={() => {}}
                 />
-              </>
+              </React.Fragment>
             );
           })}
 

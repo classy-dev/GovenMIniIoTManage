@@ -14,8 +14,8 @@ const CircleArrow = (props: SVGProps<SVGSVGElement>) => {
       <path
         d="M11 9.52563L14 12.5256L11 15.5256"
         stroke="white"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

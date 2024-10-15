@@ -1,7 +1,7 @@
 import Navigation from '@/components/Navigation';
 import '@/styles/globals.css';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import Script from 'next/script';
@@ -13,6 +13,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import styled from '@emotion/styled';
+import { authStore } from '@/mobx/authStore';
 
 const LayoutWrapper = styled.div`
   max-width: 102.4rem;
@@ -41,6 +42,13 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       mutationCache: new MutationCache(),
     })
   );
+
+  useEffect(() => {
+    // 클라이언트 사이드에서만 실행 (인증 체크)
+    authStore.loadFromLocalStorage();
+    authStore.checkAuth();
+  }, []);
+
   const renderPage = useMemo(
     () =>
       Component.getLayout ? (
@@ -71,32 +79,6 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
               gtag('config', '${process.env.NEXT_PUBLIC_ANALYTICS_ID}', {});
             `}
           </Script>
-          {/* <Script defer strategy="afterInteractive">
-            {`
-              function handleAndroidKeyboard() {
-                const metaViewport = document.querySelector('meta[name=viewport]');
-                const originalContent = metaViewport.getAttribute('content');
-                const originalHeight = window.visualViewport.height;
-
-                window.visualViewport.addEventListener('resize', () => {
-                  if (window.visualViewport.height < originalHeight) {
-                    // 키보드가 올라왔을 때
-                    metaViewport.setAttribute('content', originalContent + ', height=' + window.visualViewport.height + 'px');
-                  } else {
-                    // 키보드가 내려갔을 때
-                    metaViewport.setAttribute('content', originalContent);
-                  }
-                  
-                  // 스크롤 컨테이너의 높이 조정
-                  const scrollContainer = document.querySelector('#__next');
-                  scrollContainer.style.height = window.visualViewport.height + 'px';
-                });
-              }
-              handleAndroidKeyboard();
-              // 페이지 로드 시 함수 실행
-              window.addEventListener('load', handleAndroidKeyboard);
-            `}
-          </Script> */}
         </>
       )}
       <QueryClientProvider client={queryClient}>

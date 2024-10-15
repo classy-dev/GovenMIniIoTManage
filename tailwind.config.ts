@@ -1,20 +1,20 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        primary: "var(--color-primary)",
-        secondary: "var(--color-secondary)",
-        foreground: "var(--color-foreground)",
-        text: "var(--color-text)",
-        textSecondary: "var(--color-text-secondary)",
-        textAccent: "var(--color-text-accent)",
+        primary: 'var(--color-primary)',
+        secondary: 'var(--color-secondary)',
+        foreground: 'var(--color-foreground)',
+        text: 'var(--color-text)',
+        textSecondary: 'var(--color-text-secondary)',
+        textAccent: 'var(--color-text-accent)',
       },
     },
     fontFamily: {
