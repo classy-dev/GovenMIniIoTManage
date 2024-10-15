@@ -17,7 +17,7 @@ const createAuthStore = () => {
 
     setUserInfo(info: UserInfo) {
       store.userInfo = info;
-      store.isAuthenticated = true;
+      store.isAuthenticated = !!info?.goAuth;
       store.saveToLocalStorage();
     },
 
@@ -51,7 +51,11 @@ const createAuthStore = () => {
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData) as UserInfo;
-          store.setUserInfo(parsedData);
+          if (!parsedData || !parsedData.goAuth) {
+            store.logout();
+          } else {
+            store.setUserInfo(parsedData);
+          }
         } catch (error) {
           console.error('Failed to parse auth data from localStorage:', error);
           store.logout();
