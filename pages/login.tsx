@@ -123,6 +123,7 @@ const LoginPage = () => {
                   value={userId}
                   onChange={e => setUserId(e.target.value)}
                   className="w-full px-4  rounded-md border h-[4.8rem] border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  autoComplete="off"
                   required
                 />
               </div>
@@ -139,6 +140,7 @@ const LoginPage = () => {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   className="w-full px-4   h-[4.8rem] rounded-md border  border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  autoComplete="off"
                   required
                 />
               </div>
