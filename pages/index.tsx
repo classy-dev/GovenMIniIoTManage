@@ -87,20 +87,16 @@ const DashboardWrapper = styled.main`
   }
 `;
 
+const baseDate = dayjs().add(-1, 'day');
+
 const HomePage = () => {
   return (
     <>
       <Seo title="GOVEN MINI" description="" image="" url="" />
       <DashboardWrapper className="mx-auto text-center uppercase font-sans  px-[1.6rem] flex flex-col gap-[0.8rem]">
         <BasicInfo />
-        <div className="flex flex-wrap gap-[0.8rem]">
-          {/** 평균 가동 횟수 그래프 */}
-          <RunAvgCount dateType="7" />
-          <RunAvgCount dateType="30" />
-        </div>
-
-        {/** 일자별 매장 수 & 평균 가동 시간 */}
-        <StoreInfo baseDate={dayjs()} />
+        <RunAvgCount />
+        <StoreInfo baseDate={baseDate} />
         <StoreRankings />
       </DashboardWrapper>
     </>

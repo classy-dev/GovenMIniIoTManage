@@ -20,9 +20,10 @@ export interface GraphData {
 }
 
 export interface StoreListItem {
+  [key: string]: string | number | number[];
   store_idx: number;
   store_name: string;
-  [key: string]: string | number;
+  govenmini_iot_idx_list: number[];
 }
 
 // 기본 정보

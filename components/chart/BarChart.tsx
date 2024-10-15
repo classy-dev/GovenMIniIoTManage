@@ -4,6 +4,7 @@ import { Group } from '@visx/group';
 import { useParentSize } from '@visx/responsive';
 import { scaleBand, scaleLinear } from '@visx/scale';
 import { Bar, Line } from '@visx/shape';
+import { Text } from '@visx/text';
 import { descending, max, sort } from '@visx/vendor/d3-array';
 import dayjs from 'dayjs';
 import ResponsiveContainer from './ResponsiveContainer';
@@ -32,10 +33,10 @@ export const BarChart = ({
   data,
   className,
   margin = {
-    top: 16,
+    top: 24,
     left: 24,
     bottom: 16,
-    right: 0,
+    right: 6,
   },
 }: BarsProps) => {
   const { parentRef, width, height } = useParentSize();
@@ -90,23 +91,35 @@ export const BarChart = ({
             const val = getValue(d);
             const barWidth = xScale.bandwidth();
             const barHeight = innerHeight - (yScale(val) ?? 0);
-            const barX = xScale(date);
+            const barX = xScale(date) ?? 0;
             const barY = innerHeight - barHeight;
             const color = ranks.find(r => r <= val)
               ? toptierColor
               : defaultColor;
 
             return (
-              <Bar
-                key={`bar-${i}`}
-                x={barX}
-                y={barY}
-                width={barWidth}
-                height={barHeight}
-                fill={color}
-                rx={6}
-                onClick={() => {}}
-              />
+              <>
+                <Text
+                  x={barX + barWidth / 2}
+                  y={barY - 6}
+                  dominantBaseline="end"
+                  textAnchor="middle"
+                  fontSize={10}
+                  fill="#8E8E8E"
+                >
+                  {val}
+                </Text>
+                <Bar
+                  key={`bar-${i}`}
+                  x={barX}
+                  y={barY}
+                  width={barWidth}
+                  height={barHeight}
+                  fill={color}
+                  rx={6}
+                  onClick={() => {}}
+                />
+              </>
             );
           })}
 

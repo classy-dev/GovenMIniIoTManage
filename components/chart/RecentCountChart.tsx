@@ -5,7 +5,7 @@ import { LinearGradient } from '@visx/gradient';
 import { useParentSize } from '@visx/responsive';
 import { scaleLinear, scaleBand } from '@visx/scale';
 import { AreaClosed, Line, LinePath } from '@visx/shape';
-import { max } from '@visx/vendor/d3-array';
+import { max, min } from '@visx/vendor/d3-array';
 import dayjs from 'dayjs';
 import ResponsiveContainer from './ResponsiveContainer';
 
@@ -42,6 +42,9 @@ const RecentCountChart = ({
   const innerHeight = height - margin.top - margin.bottom;
   // const mockup = type === 'week' ? weekCountData : monthCountData;
 
+  const maxValue = max(data, getValue) ?? 0;
+  const minValue = min(data, getValue) ?? 0;
+
   const XScale = useMemo(
     () =>
       scaleBand({
@@ -57,13 +60,15 @@ const RecentCountChart = ({
     () =>
       scaleLinear({
         range: [innerHeight, 0],
-        domain: [0, Math.max(max(data, getValue) ?? 0, 230)],
+        domain: [0, Math.max(maxValue, 230)],
         nice: true,
       }),
     [margin.top, innerHeight, data]
   );
 
   const guideY = useMemo(() => YScale(230), [YScale]);
+  const maxY = useMemo(() => YScale(maxValue), [YScale]);
+  const minY = useMemo(() => YScale(minValue), [YScale]);
 
   if (width < 10)
     return <ResponsiveContainer ref={parentRef} className={className ?? ''} />;
@@ -80,7 +85,7 @@ const RecentCountChart = ({
           rx={14}
         />
         <g transform={`translate(${margin.left},${margin.top})`}>
-          <Line
+          {/* <Line
             from={{
               x: 0,
               y: guideY,
@@ -88,6 +93,34 @@ const RecentCountChart = ({
             to={{
               x: innerWidth,
               y: guideY,
+            }}
+            stroke="#D08483"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+            pointerEvents="none"
+          /> */}
+          <Line
+            from={{
+              x: 0,
+              y: maxY,
+            }}
+            to={{
+              x: innerWidth,
+              y: maxY,
+            }}
+            stroke="#D08483"
+            strokeWidth={1}
+            strokeDasharray="4 4"
+            pointerEvents="none"
+          />
+          <Line
+            from={{
+              x: 0,
+              y: minY,
+            }}
+            to={{
+              x: innerWidth,
+              y: minY,
             }}
             stroke="#D08483"
             strokeWidth={1}
@@ -143,7 +176,7 @@ const RecentCountChart = ({
             hideAxisLine
             hideTicks
             hideZero
-            tickValues={[230]}
+            tickValues={[minValue, maxValue]}
             tickLabelProps={{
               fill: '#C1C1C1',
               fontSize: 10,

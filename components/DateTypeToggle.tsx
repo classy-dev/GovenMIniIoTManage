@@ -32,7 +32,7 @@ interface Props {
   onChange?: (val: string) => void;
 }
 
-const RADIO_VALUES = ['7일', '30일'];
+const RADIO_VALUES = ['7', '30'];
 
 const DateTypeToggle = ({ selectedValue = '', onChange, className }: Props) => {
   return (
@@ -48,7 +48,7 @@ const DateTypeToggle = ({ selectedValue = '', onChange, className }: Props) => {
             checked={val === selectedValue}
             onChange={e => onChange?.(e.target.value)}
           />
-          <span className="label">{!val ? '전체' : val}</span>
+          <span className="label">{!val ? '전체' : `${val}일`}</span>
         </label>
       ))}
     </ToggleWrapper>

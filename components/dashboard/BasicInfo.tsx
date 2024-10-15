@@ -1,6 +1,7 @@
 import { useBasicInfo } from '@/hooks/dashboardHooks';
 import Card from '../Card';
 import PieChart from '../chart/PieChart';
+import CircleArrow from '../icons/CircleArrow';
 import FireWork from '../icons/Firework';
 import Goven from '../icons/Goven';
 import TodayWeather from '../TodayWeather';
@@ -15,7 +16,7 @@ const BasicInfo = () => {
           <TodayWeather />
         </Card>
         {/** 운영률 키드 */}
-        <Card className="relative w-full flex-1">
+        <Card className="relative w-full flex-1 md:basis-[21%] basis-full ">
           <div className="w-full flex-1 flex justify-between">
             <div className="total-count">
               <p className="title !leading-tight">
@@ -49,8 +50,61 @@ const BasicInfo = () => {
             </div>
           </div>
         </Card>
+        {/** 운영중인 고븐미니 카드 */}
+        <Card
+          className="basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex flex-col !bg-[#FA4616] text-white leading-tight text-left"
+          href="/store-devices?p=ON"
+        >
+          <div className="w-full flex flex-col items-center justify-center">
+            <div className="relative inline-flex opacity-65">
+              <Goven width={47} height={53} />
+              <FireWork className="absolute bottom-[0.25rem] left-[-0.2rem] scale-[0.65]" />
+            </div>
+            <div className="flex flex-col items-center justify-center w-full text-center mt-[1.6rem]">
+              <span className="w-full mb-[0.8rem] text-[1.2rem] leading-none">
+                운영중인 고븐미니
+              </span>
+              <p className="total">
+                <span className="count">{data?.store_in_operation}</span> 대
+              </p>
+              <button
+                type="button"
+                className="mt-[1.6rem]"
+                aria-label="운영중인 고븐미니 보기"
+              >
+                <CircleArrow />
+              </button>
+            </div>
+          </div>
+        </Card>
+        {/** 미 운영중인 고븐미니 카드 */}
+        <Card
+          href="/store-devices?p=OFF"
+          className="basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex !flex-col !bg-[#171C8F] text-white leading-tight text-left"
+        >
+          <div className="w-full flex flex-col items-center justify-center">
+            <div className="relative inline-flex opacity-65">
+              <Goven width={47} height={53} />
+            </div>
+            <div className="flex flex-col items-center justify-center w-full text-center mt-[1.6rem]">
+              <span className="w-full mb-[0.8rem] text-[1.2rem] leading-none">
+                미 운영중인 고븐미니
+              </span>
+              <p className="total">
+                <span className="count">{data?.store_not_operation}</span> 대
+              </p>
+              <button
+                type="button"
+                className="mt-[1.6rem]"
+                aria-label="운영중인 고븐미니 보기"
+              >
+                <CircleArrow />
+              </button>
+            </div>
+          </div>
+        </Card>
       </div>
-      <div className="flex gap-[0.8rem] text-[1.4rem] flex-wrap">
+      <div className="gap-[0.8rem] text-[1.4rem] flex-wrap hidden">
         {/** 운영중인 고븐미니 카드 */}
         <Card
           className="basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex flex-col !bg-[#FA4616] text-white leading-tight text-left"

@@ -12,6 +12,7 @@ const SkeletonBarChart = ({ className = '' }) => {
     'h-28',
     'h-12',
   ];
+
   return (
     <Card
       className={`${className} animate-pulse`}

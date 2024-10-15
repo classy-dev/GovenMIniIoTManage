@@ -32,7 +32,7 @@ const StoreRanking = ({
             key={data.store_idx}
             className="inline-flex w-full"
             scroll
-            href={`/store-devices/${data.machinery_minigoven_idx}`}
+            href={`/store-devices?q=${data.store_name}`}
           >
             <div
               key={data.store_idx}
