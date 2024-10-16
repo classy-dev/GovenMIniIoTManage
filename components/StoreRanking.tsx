@@ -52,8 +52,8 @@ const StoreRanking = ({
                     rankValue === 0
                       ? 'text-[#8E8E8E]'
                       : rankValue > 0
-                        ? 'text-[#38A5FF]'
-                        : 'text-[#FA4616]'
+                        ? 'text-[#FA4616]'
+                        : 'text-[#38A5FF]'
                   }`}
                 >
                   {rankValue <= 0 ? rankValue : `+${rankValue}`}%

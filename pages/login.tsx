@@ -17,10 +17,10 @@ const LoginPage = () => {
 
   useEffect(() => {
     // 로그인되어있을시 대시보드 이동
-    if (authStore.isAuthenticated) {
+    if (router.isReady && authStore.isAuthenticated) {
       router.replace('/');
     }
-  }, []);
+  }, [router.isReady, authStore.isAuthenticated]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -47,7 +47,7 @@ const LoginPage = () => {
         <div
           className="hidden md:flex md:w-1/2 bg-orange-50"
           style={{
-            backgroundImage: `url(/login.png)`,
+            backgroundImage: `url(/img_goven.jpg)`,
             backgroundSize: 'contain',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',

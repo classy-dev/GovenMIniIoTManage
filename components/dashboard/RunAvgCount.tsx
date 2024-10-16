@@ -26,7 +26,7 @@ const RunAvgCount = () => {
       ) : (
         <Card
           className="basis-full"
-          title={`${dateType}일간 평균 가동 횟수 그래프`}
+          title="일자별 가동 횟수"
           sub={
             <DateTypeToggle selectedValue={dateType} onChange={setDateType} />
           }

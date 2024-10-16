@@ -5,6 +5,7 @@ import React, { useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
+import { useRouter } from 'next/router';
 import Script from 'next/script';
 import { AppPropsWithLayout } from 'next';
 import {
@@ -31,6 +32,7 @@ const Layout = ({ children }: React.PropsWithChildren) => (
 );
 
 const App = ({ Component, pageProps }: AppPropsWithLayout) => {
+  const router = useRouter();
   const { current: queryClient } = React.useRef(
     new QueryClient({
       defaultOptions: {
@@ -46,10 +48,11 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   );
 
   useEffect(() => {
+    if (!router.isReady) return;
     // 클라이언트 사이드에서만 실행 (인증 체크)
     authStore.loadFromLocalStorage();
     authStore.checkAuth();
-  }, []);
+  }, [router.isReady]);
 
   const renderPage = useMemo(
     () =>

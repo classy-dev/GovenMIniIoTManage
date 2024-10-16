@@ -18,6 +18,7 @@ export type BarsProps = {
   defaultColor?: string;
   toptierColor?: string;
   className?: string;
+  valueFormat?: (val: number) => string;
 
   data: BarChartData[];
   margin?: { top: number; left: number; right: number; bottom: number };
@@ -32,6 +33,7 @@ export const BarChart = ({
   toptierColor = '#171C8F',
   data,
   className,
+  valueFormat = (val: number) => `${val}`,
   margin = {
     top: 24,
     left: 24,
@@ -107,7 +109,7 @@ export const BarChart = ({
                   fontSize={10}
                   fill="#8E8E8E"
                 >
-                  {val}
+                  {valueFormat(val)}
                 </Text>
                 <Bar
                   key={`bar-${i}`}
@@ -150,7 +152,8 @@ export const BarChart = ({
               textAnchor: 'middle',
               fontFamily: 'GmarketSans',
             }}
-            tickValues={[avg]}
+            tickValues={avg >= 1 ? [avg] : []}
+            tickFormat={d => valueFormat(d as number)}
             tickLength={12}
           />
           <Line

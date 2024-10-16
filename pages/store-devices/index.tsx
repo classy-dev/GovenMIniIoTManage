@@ -8,7 +8,6 @@ import Seo from '@/components/Seo';
 import StoreFilter, {
   StoreFilterData,
 } from '@/components/store-devices/StoreFilter';
-// import StoreFilter from '@/components/store-devices/StoreFilter';
 import StoreLayout from '@/components/store-devices/StoreLayout';
 import StoreList from '@/components/store-devices/StoreList';
 import useSearchParamsFromRouter from '@/hooks/useSearchParamsFromRouter';

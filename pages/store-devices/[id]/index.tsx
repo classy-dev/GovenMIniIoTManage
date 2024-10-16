@@ -169,11 +169,11 @@ const StoreDetail = () => {
   );
 
   useEffect(() => {
-    if (!data) return () => {};
-    if (isON) setTime(Number(data?.iot_info.power_running_time));
+    if (!data || data?.iot_info.power_status === 0) return () => {};
+    setTime(Number(data?.iot_info.power_running_time));
 
     const timer = window.setInterval(() => {
-      if (isON) setTime(val => val + 1);
+      setTime(val => val + 1);
       setCurrentTime(new Date());
     }, 1000);
 
@@ -225,7 +225,7 @@ const StoreDetail = () => {
           <dd>{data?.iot_info.acting ?? 0}회</dd>
         </dl>
         <dl>
-          <dt>현재 가동 시간</dt>
+          <dt>현재 상태 지속 시간</dt>
           <dd>{formatSecondsToTime(time)}</dd>
         </dl>
       </div>
