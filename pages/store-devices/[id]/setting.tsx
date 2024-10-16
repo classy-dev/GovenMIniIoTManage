@@ -1,6 +1,8 @@
 import { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import { observer } from 'mobx-react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+import { NextPageWithLayout } from 'next';
 import { useMutation } from 'react-query';
 import styled from '@emotion/styled';
 import { updateDeviceSettingInfo } from '@/api/device';
@@ -10,6 +12,7 @@ import TimeInput from '@/components/form/TimeInput';
 import StoreDetailLayout from '@/components/store-devices/StoreDetailLayout';
 import useBack from '@/hooks/useBack';
 import useDeviceSettingInfo from '@/hooks/useDeviceSetting';
+import { authStore } from '@/mobx/authStore';
 
 const SettingWrapper = styled.div`
   max-width: 76.8rem;
@@ -100,6 +103,8 @@ const Setting = () => {
   const back = useBack();
   const router = useRouter();
 
+  const canUpdate = authStore.userTypeLabel === '고피자';
+
   const [showConfirm, setShowConfirm] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -143,7 +148,7 @@ const Setting = () => {
 
   return (
     <StoreDetailLayout>
-      <SettingWrapper className={!isPowerOn ? 'off' : ''}>
+      <SettingWrapper className={!isPowerOn || !canUpdate ? 'off' : ''}>
         <div className="status">
           <dl className={isPowerOn ? 'on' : ''}>
             <dt>전원상태</dt>
@@ -156,11 +161,8 @@ const Setting = () => {
         </div>
         <form
           ref={formRef}
-          onSubmit={handleSubmit(() => {
-            console.log('form submit');
-
-            setShowConfirm(true);
-          })}
+          aria-disabled={!isPowerOn || !canUpdate ? 'true' : undefined}
+          onSubmit={handleSubmit(() => setShowConfirm(true))}
         >
           <div className="field">
             <span className="label">예열 온도</span>
@@ -169,7 +171,7 @@ const Setting = () => {
                 control={control}
                 name="pre_heat_temp"
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
               <span className="unit">℃</span>
             </div>
@@ -181,7 +183,7 @@ const Setting = () => {
                 control={control}
                 name="cook_1.temp"
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
               <span className="unit">℃</span>
             </div>
@@ -191,7 +193,7 @@ const Setting = () => {
                 control={control}
                 name="cook_1.running_time"
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
             </div>
           </div>
@@ -202,7 +204,7 @@ const Setting = () => {
                 name="cook_2.temp"
                 control={control}
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
               <span className="unit">℃</span>
             </div>
@@ -212,7 +214,7 @@ const Setting = () => {
                 control={control}
                 name="cook_2.running_time"
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
             </div>
           </div>
@@ -223,7 +225,7 @@ const Setting = () => {
                 name="cook_3.temp"
                 control={control}
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
               <span className="unit">℃</span>
             </div>
@@ -233,16 +235,16 @@ const Setting = () => {
                 control={control}
                 name="cook_3.running_time"
                 defaultValue={0}
-                disabled={!isPowerOn}
+                disabled={!isPowerOn || !canUpdate}
               />
             </div>
           </div>
           <button
             type="submit"
-            disabled={!isPowerOn}
+            disabled={!isPowerOn || !canUpdate}
             className="h-[5.6rem] bg-[#FA4616] rounded-[0.6rem] mt-[1.6rem] font-bold text-white disabled:cursor-not-allowed"
           >
-            기기 설정 저장
+            {!canUpdate ? '기기 설정 권한이 없습니다.' : '기기 설정 저장'}
           </button>
         </form>
       </SettingWrapper>
@@ -264,6 +266,7 @@ const Setting = () => {
   );
 };
 
-Setting.getLayout = (page: ReactElement) => page;
+const AuthStoreWithSetting = observer(Setting) as NextPageWithLayout;
+AuthStoreWithSetting.getLayout = (page: ReactElement) => page;
 
-export default Setting;
+export default AuthStoreWithSetting;
