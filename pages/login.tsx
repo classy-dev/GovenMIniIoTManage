@@ -48,7 +48,7 @@ const LoginPage = () => {
           className="hidden md:flex md:w-1/2 bg-orange-50"
           style={{
             backgroundImage: `url(/img_goven.jpg)`,
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
           }}
