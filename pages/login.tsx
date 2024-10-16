@@ -45,7 +45,7 @@ const LoginPage = () => {
       <div className="flex h-screen">
         {/* Image Area */}
         <div
-          className="hidden md:flex md:w-1/2 bg-orange-50"
+          className="hidden md:flex md:w-1/2 bg-[rgba(255, 224, 193, 0.2)]"
           style={{
             backgroundImage: `url(/img_goven.jpg)`,
             backgroundSize: 'cover',
