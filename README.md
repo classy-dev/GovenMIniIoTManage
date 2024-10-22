@@ -25,14 +25,16 @@
 
 ## 개발 환경 설정
 
-1. 의존성 설치
-   yarn install
+```bash
+# 1. 의존성 설치
+yarn install
 
-2. 개발 서버 실행
-   yarn dev
+# 2. 개발 서버 실행
+yarn dev
 
-3. 프로덕션 빌드
-   yarn build
+# 3. 프로덕션 빌드
+yarn build
+```
 
 ## 배포
 
