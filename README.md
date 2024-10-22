@@ -43,6 +43,7 @@
 
 ## 프로젝트 구조
 
+```
 GovenMiniIoTManage/
 ├── api/ # API 통신 관련
 ├── components/ # 재사용 컴포넌트
@@ -53,6 +54,7 @@ GovenMiniIoTManage/
 ├── public/ # 정적 파일
 ├── styles/ # 스타일 관련
 └── util/ # 유틸리티 함수
+```
 
 ## 관련 링크
 
