@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const request = axios.create({
-  baseURL: 'https://dev.api.gopizza.kr',
+  baseURL: isProduction
+    ? 'https://api.gopizza.kr'
+    : 'https://dev.api.gopizza.kr',
 });
 
 request.interceptors.response.use(response => {
