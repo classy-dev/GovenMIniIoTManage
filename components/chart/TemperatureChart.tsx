@@ -115,10 +115,31 @@ export default withTooltip<Props, ChartData>(
     const nextDateTime = getNextFiveMinutes(currentTime);
 
     // Filter data to only show up to the current time and add current temperature as next tick
-    const extendedData = useMemo(
-      () => data.filter(d => new Date(`${d.datetime}`).getMinutes() % 5 === 0),
-      [data]
-    );
+    const extendedData = useMemo(() => {
+      const groupedData: {
+        [key: string]: { datetime: string; temp: number }[];
+      } = {};
+
+      // 데이터를 5분 단위로 그룹화
+      data.forEach(d => {
+        const date = new Date(d.datetime);
+        const key = `${date.getHours()}:${Math.floor(date.getMinutes() / 5) * 5}`;
+
+        if (!groupedData[key]) {
+          groupedData[key] = [];
+        }
+        groupedData[key].push(d);
+      });
+
+      // 각 5분 그룹에서 최고 온도 값 선택
+      return Object.values(groupedData).map(group =>
+        group.reduce(
+          (currentMax, item) =>
+            item.temp > currentMax.temp ? item : currentMax,
+          group[0]
+        )
+      );
+    }, [data]);
 
     // Transform data to temperature differences
     const transformedData = useMemo(
