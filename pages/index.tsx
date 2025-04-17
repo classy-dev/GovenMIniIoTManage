@@ -2,7 +2,6 @@ import React from 'react';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import BasicInfo from '@/components/dashboard/BasicInfo';
-import RunAvgCount from '@/components/dashboard/RunAvgCount';
 import StoreInfo from '@/components/dashboard/StoreInfo';
 import StoreRankings from '@/components/dashboard/StoreRankings';
 import Seo from '@/components/Seo';
@@ -95,7 +94,7 @@ const HomePage = () => {
       <Seo title="GOVEN MINI" description="" image="" url="" />
       <DashboardWrapper className="mx-auto text-center uppercase font-sans  px-[1.6rem] flex flex-col gap-[0.8rem]">
         <BasicInfo />
-        <RunAvgCount />
+        {/* <RunAvgCount /> */}
         <StoreInfo baseDate={baseDate} />
         <StoreRankings />
       </DashboardWrapper>
