@@ -24,6 +24,7 @@ interface Props {
   }[];
   currentTemperature: number;
   currentTime: Date;
+  onLastStateChange?: (timestamp: Date | null, processedData: any[]) => void;
 }
 
 const TooltipStyle = styled.div`
@@ -108,6 +109,7 @@ export default withTooltip<Props, ChartData>(
     currentTemperature,
     currentTime,
     data,
+    onLastStateChange,
   }: Props & WithTooltipProvidedProps<ChartData>) => {
     const { parentRef, width, height } = useParentSize();
 
@@ -160,6 +162,11 @@ export default withTooltip<Props, ChartData>(
       let zeroCounter = 0;
       const MAX_ZERO_COUNT = 60; // 3분 단위로 60개 = 3시간
 
+      // 현재 상태와 마지막 상태 변경 시점 추적을 위한 변수
+      let currentState = 'inactive';
+      let lastStateChange = null;
+      let lastStateChangeIndex = -1;
+
       for (let i = 0; i < maxTempByGroup.length; i += 1) {
         const current = maxTempByGroup[i];
 
@@ -168,46 +175,88 @@ export default withTooltip<Props, ChartData>(
           lastPowerStatus = current.power_status;
         }
 
-        // 전원 상태에 따른 처리
+        // 처리된 온도 값 (전원 OFF이면 0, 아니면 기존 로직대로)
+        let processedTemp = 0;
+
         if (lastPowerStatus === 'OFF') {
-          // 전원 상태가 "OFF"면 항상 온도를 0으로 설정
-          result.push({
-            datetime: current.datetime,
-            temp: 0,
-            power_status: lastPowerStatus,
-          });
+          // 전원 상태가 OFF면 항상 온도를 0으로 설정
+          processedTemp = 0;
         } else if (current.temp === 0) {
           // 온도가 0이고 전원이 꺼져있지 않은 경우 처리
           zeroCounter += 1;
           // 3시간 이내의 0값은 이전 값 유지 (전원이 OFF가 아닌 경우에만)
           if (zeroCounter <= MAX_ZERO_COUNT && lastValidTemp > 0) {
-            result.push({
-              datetime: current.datetime,
-              temp: lastValidTemp,
-              power_status: lastPowerStatus,
-            });
+            processedTemp = lastValidTemp;
           } else {
             // 3시간 초과면 0으로 표시
-            result.push({
-              datetime: current.datetime,
-              temp: 0,
-              power_status: lastPowerStatus,
-            });
+            processedTemp = 0;
           }
         } else {
           // 유효한 온도가 들어오면 카운터 리셋 및 마지막 유효 온도 업데이트
           zeroCounter = 0;
           lastValidTemp = current.temp;
-          result.push({
-            datetime: current.datetime,
-            temp: current.temp,
-            power_status: lastPowerStatus,
-          });
+          processedTemp = current.temp;
         }
+
+        // 현재 상태 (활성/비활성) 결정
+        const state = processedTemp > 0 ? 'active' : 'inactive';
+
+        // 상태가 변경된 경우 시점 기록
+        if (i === 0) {
+          currentState = state;
+          lastStateChange = new Date(current.datetime);
+          lastStateChangeIndex = 0;
+        } else if (state !== currentState) {
+          currentState = state;
+          lastStateChange = new Date(current.datetime);
+          lastStateChangeIndex = i;
+        }
+
+        result.push({
+          datetime: current.datetime,
+          temp: processedTemp,
+          power_status: lastPowerStatus,
+          original_temp: current.temp, // 원본 온도 값도 저장
+        });
+      }
+
+      // 콜백을 통해 마지막 상태 변경 시점과 처리된 데이터 전달
+      if (onLastStateChange) {
+        // 현재 상태가 언제부터 시작됐는지 찾기
+        let lastChangePoint = null;
+
+        // 현재 상태 확인 (마지막 데이터 기준)
+        if (result.length > 0) {
+          const lastItem = result[result.length - 1];
+          const lastState = lastItem.temp > 0 ? 'active' : 'inactive';
+
+          // 현재 상태와 같은 첫 번째 연속 항목 찾기 (뒤에서부터)
+          let prevState = null;
+          for (let i = result.length - 1; i >= 0; i -= 1) {
+            const state = result[i].temp > 0 ? 'active' : 'inactive';
+
+            if (i === result.length - 1) {
+              prevState = state;
+            } else if (state !== prevState && state !== lastState) {
+              // 현재 상태가 시작된 지점 찾음
+              lastChangePoint = new Date(result[i + 1].datetime);
+              break;
+            }
+
+            prevState = state;
+          }
+
+          // 찾지 못했으면 첫 항목 사용
+          if (!lastChangePoint && result.length > 0) {
+            lastChangePoint = new Date(result[0].datetime);
+          }
+        }
+
+        onLastStateChange(lastChangePoint, result);
       }
 
       return result;
-    }, [data]);
+    }, [data, onLastStateChange]);
 
     // Transform data to temperature differences
     const transformedData = useMemo(

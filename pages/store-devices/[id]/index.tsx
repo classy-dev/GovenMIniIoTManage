@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo, useState } from 'react';
+import { ReactElement, useEffect, useMemo, useState, useCallback } from 'react';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
@@ -157,7 +157,6 @@ const mockup: mockData = temperature_json as unknown as mockData;
 const StoreDetail = () => {
   const router = useRouter();
   const id = useMemo(() => parseInt(router.query.id as string), [router.query]);
-  const [time, setTime] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const { data, isLoading, error } = useDeviceInfo(id);
@@ -169,30 +168,58 @@ const StoreDetail = () => {
     power_status?: string | null;
   }
 
+  // power_status 필드가 없는 경우를 대비한 데이터 변환
   const chartData = useMemo(() => {
     if (!tempData?.graph) return [];
     return tempData.graph.map((item: TempDataItem) => ({
       ...item,
-      power_status: item.power_status ?? null, // power_status 필드가 없으면 null로 설정
+      power_status: item.power_status ?? null,
     }));
   }, [tempData?.graph]);
+
+  // 상태 변경 시점과 상태 지속 시간 상태 관리
+  const [lastStateChangeTime, setLastStateChangeTime] = useState<Date | null>(
+    null
+  );
+  const [processedChartData, setProcessedChartData] = useState<any[]>([]);
+
+  // 차트로부터 상태 변경 정보 수신 처리
+  const handleLastStateChange = useCallback(
+    (timestamp: Date | null, processedData: any[]) => {
+      if (timestamp) {
+        setLastStateChangeTime(timestamp);
+        setProcessedChartData(processedData);
+      }
+    },
+    []
+  );
+
+  // 상태 지속 시간 계산 (밀리초 -> 초 변환)
+  const statusDuration = useMemo(() => {
+    if (!lastStateChangeTime) return 0;
+
+    const diffSeconds = Math.floor(
+      (new Date().getTime() - lastStateChangeTime.getTime()) / 1000
+    );
+
+    return diffSeconds > 0 ? diffSeconds : 0;
+  }, [lastStateChangeTime, currentTime]);
 
   const isON = useMemo(
     () => data?.iot_info.power_status === 2,
     [data?.iot_info.power_status]
   );
 
+  // 1초마다 현재 시간 업데이트 (차트 및 상태 지속 시간 갱신용)
   useEffect(() => {
-    if (!data || data?.iot_info.power_status === 0) return () => {};
-    setTime(Number(data?.iot_info.power_running_time));
+    if (!data) return () => {};
 
     const timer = window.setInterval(() => {
-      setTime((val: number) => val + 1);
       setCurrentTime(new Date());
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [data?.iot_info.power_running_time, isON]);
+  }, [data]);
 
   if (isLoading || !router.isReady) {
     return (
@@ -240,7 +267,7 @@ const StoreDetail = () => {
         </dl>
         <dl>
           <dt>현재 상태 지속 시간</dt>
-          <dd>{formatSecondsToTime(time)}</dd>
+          <dd>{formatSecondsToTime(statusDuration)}</dd>
         </dl>
       </div>
       <div className="device-info">
@@ -268,6 +295,7 @@ const StoreDetail = () => {
         data={chartData}
         currentTemperature={parseInt(data?.iot_info.temp ?? '')}
         currentTime={currentTime}
+        onLastStateChange={handleLastStateChange}
       />
     </TemperatureWrapper>
   );
