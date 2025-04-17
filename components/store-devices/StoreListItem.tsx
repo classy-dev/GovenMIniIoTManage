@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { StoreListData } from '@/api/device';
 import { mq } from '@/styles/responsive';
-import { formatSecondsToTime } from '@/util/time';
 
 const StoreItemWrapper = styled.div`
   position: relative;
@@ -154,10 +153,10 @@ const StoreListItem = ({ info, status, onClick }: StoreListItemProps) => {
     >
       <div className="status">
         <span className="badge">{status}</span>
-        <time>
+        {/* <time>
           {status === 'on' || status === 'off' ? formatSecondsToTime(time) : ''}
           <br />
-        </time>
+        </time> */}
       </div>
       <div className="info">
         <span className="serial">{info.device_info.barcode}</span>
