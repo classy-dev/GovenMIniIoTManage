@@ -7,6 +7,7 @@ import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { AppPropsWithLayout } from 'next';
 import {
   MutationCache,
@@ -88,6 +89,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       )}
       <QueryClientProvider client={queryClient}>
         {renderPage}
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </>
   );

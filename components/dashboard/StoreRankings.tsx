@@ -22,6 +22,8 @@ const StoreRankings = () => {
   const comparedMonthDesceding = useStoreListUptimeComparedMonth(3, 'desc');
   const comparedMonthAsceding = useStoreListUptimeComparedMonth(3, 'asc');
 
+  console.log(uptimeRateAscending.data?.list);
+
   return (
     <div className="flex flex-wrap gap-[0.8rem]">
       <StoreRanking

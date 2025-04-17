@@ -25,7 +25,10 @@ const StoreRanking = ({
   return (
     <Card title={title} sub={sub} className={className ?? ''}>
       {storeData.map((data, i) => {
-        const rankValue = Number(data.uptime_avg_rate || data.compared_per);
+        const rankValue =
+          data.uptime_avg_rate === 0
+            ? 0
+            : Number(data.uptime_avg_rate || data.compared_per);
 
         return (
           <Link
