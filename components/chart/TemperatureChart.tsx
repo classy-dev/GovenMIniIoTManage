@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { AxisBottom, AxisLeft } from '@visx/axis';
-import { curveBasis } from '@visx/curve';
+import { curveLinear } from '@visx/curve';
 import { localPoint } from '@visx/event';
 import { LinearGradient } from '@visx/gradient';
 import { useParentSize } from '@visx/responsive';
@@ -131,14 +131,58 @@ export default withTooltip<Props, ChartData>(
         groupedData[key].push(d);
       });
 
-      // 각 3분 그룹에서 최고 온도 값 선택
-      return Object.values(groupedData).map(group =>
-        group.reduce(
-          (currentMax, item) =>
-            item.temp > currentMax.temp ? item : currentMax,
-          group[0]
-        )
-      );
+      // 각 3분 그룹에서 최고 온도 값 선택하고 타임스탬프로 정렬
+      const maxTempByGroup = Object.entries(groupedData)
+        .map(([key, group]) => {
+          // 그룹에서 최고 온도 값 선택
+          const maxTempItem = group.reduce(
+            (currentMax, item) =>
+              item.temp > currentMax.temp ? item : currentMax,
+            group[0]
+          );
+
+          return {
+            ...maxTempItem,
+            sortTimestamp: new Date(maxTempItem.datetime).getTime(), // 정렬용 타임스탬프
+          };
+        })
+        .sort((a, b) => a.sortTimestamp - b.sortTimestamp); // 타임스탬프로 정확히 정렬
+
+      // 온도 값이 0인 경우 이전 값 유지 (최대 3시간까지)
+      const result = [];
+      let lastValidTemp = 0;
+      let zeroCounter = 0;
+      const MAX_ZERO_COUNT = 60; // 3분 단위로 60개 = 3시간
+
+      for (let i = 0; i < maxTempByGroup.length; i += 1) {
+        const current = maxTempByGroup[i];
+        if (current.temp === 0) {
+          zeroCounter += 1;
+          // 3시간 이내의 0값은 이전 값 유지
+          if (zeroCounter <= MAX_ZERO_COUNT && lastValidTemp > 0) {
+            result.push({
+              datetime: current.datetime,
+              temp: lastValidTemp,
+            });
+          } else {
+            // 3시간 초과면 0으로 표시
+            result.push({
+              datetime: current.datetime,
+              temp: current.temp,
+            });
+          }
+        } else {
+          // 유효한 온도가 들어오면 카운터 리셋 및 마지막 유효 온도 업데이트
+          zeroCounter = 0;
+          lastValidTemp = current.temp;
+          result.push({
+            datetime: current.datetime,
+            temp: current.temp,
+          });
+        }
+      }
+
+      return result;
     }, [data]);
 
     // Transform data to temperature differences
@@ -149,13 +193,12 @@ export default withTooltip<Props, ChartData>(
           : [
               ...extendedData,
               {
-                datetime: toDateString(nextDateTime),
-                display_time: toDateString(currentTime),
+                datetime: nextDateTime.toISOString(),
                 temp: currentTemperature,
+                display_time: nextDateTime.toISOString(),
               },
             ],
-
-      [extendedData, currentTemperature]
+      [extendedData, currentTemperature, nextDateTime]
     );
 
     // bounds
@@ -320,7 +363,7 @@ export default withTooltip<Props, ChartData>(
               y={d => temperatureScale(getTemperature(d)) ?? 0}
               yScale={temperatureScale}
               fill="url(#area-gradient)"
-              curve={curveBasis}
+              curve={curveLinear}
             />
             <LinePath<(typeof transformedData)[number]>
               data={transformedData}
@@ -328,7 +371,7 @@ export default withTooltip<Props, ChartData>(
               y={d => temperatureScale(getTemperature(d)) ?? 0}
               stroke="#FA4616"
               strokeWidth={2}
-              curve={curveBasis}
+              curve={curveLinear}
             />
             <Bar
               x={0}
