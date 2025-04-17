@@ -84,6 +84,30 @@ const History = () => {
     }
   );
 
+  // 중복 텍스트를 필터링하는 처리 로직 추가
+  const filteredData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+
+    // 시간순으로 정렬
+    const sortedData = [...data].sort(
+      (a, b) =>
+        dayjs(`1970-01-01 ${a.time}`).unix() -
+        dayjs(`1970-01-01 ${b.time}`).unix()
+    );
+
+    // 중복된 연속 메시지 필터링
+    return sortedData.reduce<Array<{ time: string; text: string }>>(
+      (result, item, index) => {
+        // 첫 번째 항목이거나 이전 항목과 텍스트가 다른 경우에만 추가
+        if (index === 0 || item.text !== sortedData[index - 1].text) {
+          result.push(item);
+        }
+        return result;
+      },
+      []
+    );
+  }, [data]);
+
   return (
     <HistoryWrapper>
       <div className="date">
@@ -107,20 +131,12 @@ const History = () => {
         </button>
       </div>
       <ul className="content">
-        {data
-          ?.slice(0)
-          .sort(
-            (a, b) =>
-              dayjs(`1970-01-01 ${a.time}`).unix() -
-              dayjs(`1970-01-01 ${b.time}`).unix()
-          )
-          .map(history => (
-            <li key={history.time}>
-              <time>{dayjs(`1970-01-01 ${history.time}`).format('HH:mm')}</time>
-              <span>{history.text}</span>
-            </li>
-          ))}
-
+        {filteredData.map(history => (
+          <li key={`${history.time}-${history.text}`}>
+            <time>{dayjs(`1970-01-01 ${history.time}`).format('HH:mm')}</time>
+            <span>{history.text}</span>
+          </li>
+        ))}
         {!data ||
           (data.length === 0 && (
             <li key="empty">
