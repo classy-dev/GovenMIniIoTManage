@@ -163,6 +163,20 @@ const StoreDetail = () => {
   const { data, isLoading, error } = useDeviceInfo(id);
   const { data: tempData } = useDeviceTempData(id);
 
+  interface TempDataItem {
+    datetime: string;
+    temp: number;
+    power_status?: string | null;
+  }
+
+  const chartData = useMemo(() => {
+    if (!tempData?.graph) return [];
+    return tempData.graph.map((item: TempDataItem) => ({
+      ...item,
+      power_status: item.power_status ?? null, // power_status 필드가 없으면 null로 설정
+    }));
+  }, [tempData?.graph]);
+
   const isON = useMemo(
     () => data?.iot_info.power_status === 2,
     [data?.iot_info.power_status]
@@ -173,7 +187,7 @@ const StoreDetail = () => {
     setTime(Number(data?.iot_info.power_running_time));
 
     const timer = window.setInterval(() => {
-      setTime(val => val + 1);
+      setTime((val: number) => val + 1);
       setCurrentTime(new Date());
     }, 1000);
 
@@ -251,7 +265,7 @@ const StoreDetail = () => {
       </div>
       <TemperatureChart
         className="aspect-square md:aspect-video"
-        data={tempData?.graph ?? []}
+        data={chartData}
         currentTemperature={parseInt(data?.iot_info.temp ?? '')}
         currentTime={currentTime}
       />

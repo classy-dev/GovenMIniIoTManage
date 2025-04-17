@@ -63,6 +63,7 @@ export const fetchDeviceTemperatureData = async (
       graph: {
         datetime: string;
         temp: number;
+        power_status: string | null;
       }[];
     }>
   >(`/mc/v2/iot/govenmini/detail/${govenmini_iot_idx}/info/graph`);

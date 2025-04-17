@@ -20,6 +20,7 @@ interface Props {
   data: {
     datetime: string;
     temp: number;
+    power_status: string | null;
   }[];
   currentTemperature: number;
   currentTime: Date;
@@ -117,7 +118,11 @@ export default withTooltip<Props, ChartData>(
     // Filter data to only show up to the current time and add current temperature as next tick
     const extendedData = useMemo(() => {
       const groupedData: {
-        [key: string]: { datetime: string; temp: number }[];
+        [key: string]: {
+          datetime: string;
+          temp: number;
+          power_status: string | null;
+        }[];
       } = {};
 
       // 데이터를 3분 단위로 그룹화
@@ -148,27 +153,45 @@ export default withTooltip<Props, ChartData>(
         })
         .sort((a, b) => a.sortTimestamp - b.sortTimestamp); // 타임스탬프로 정확히 정렬
 
-      // 온도 값이 0인 경우 이전 값 유지 (최대 3시간까지)
+      // 온도 값과 전원 상태를 처리하는 로직
       const result = [];
       let lastValidTemp = 0;
+      let lastPowerStatus = null; // "ON", "OFF", 또는 null을 저장
       let zeroCounter = 0;
       const MAX_ZERO_COUNT = 60; // 3분 단위로 60개 = 3시간
 
       for (let i = 0; i < maxTempByGroup.length; i += 1) {
         const current = maxTempByGroup[i];
-        if (current.temp === 0) {
+
+        // 전원 상태가 null이 아니면 마지막 상태 업데이트
+        if (current.power_status !== null) {
+          lastPowerStatus = current.power_status;
+        }
+
+        // 전원 상태에 따른 처리
+        if (lastPowerStatus === 'OFF') {
+          // 전원 상태가 "OFF"면 항상 온도를 0으로 설정
+          result.push({
+            datetime: current.datetime,
+            temp: 0,
+            power_status: lastPowerStatus,
+          });
+        } else if (current.temp === 0) {
+          // 온도가 0이고 전원이 꺼져있지 않은 경우 처리
           zeroCounter += 1;
-          // 3시간 이내의 0값은 이전 값 유지
+          // 3시간 이내의 0값은 이전 값 유지 (전원이 OFF가 아닌 경우에만)
           if (zeroCounter <= MAX_ZERO_COUNT && lastValidTemp > 0) {
             result.push({
               datetime: current.datetime,
               temp: lastValidTemp,
+              power_status: lastPowerStatus,
             });
           } else {
             // 3시간 초과면 0으로 표시
             result.push({
               datetime: current.datetime,
-              temp: current.temp,
+              temp: 0,
+              power_status: lastPowerStatus,
             });
           }
         } else {
@@ -178,6 +201,7 @@ export default withTooltip<Props, ChartData>(
           result.push({
             datetime: current.datetime,
             temp: current.temp,
+            power_status: lastPowerStatus,
           });
         }
       }
@@ -195,6 +219,7 @@ export default withTooltip<Props, ChartData>(
               {
                 datetime: nextDateTime.toISOString(),
                 temp: currentTemperature,
+                power_status: null,
                 display_time: nextDateTime.toISOString(),
               },
             ],
