@@ -120,10 +120,10 @@ export default withTooltip<Props, ChartData>(
         [key: string]: { datetime: string; temp: number }[];
       } = {};
 
-      // 데이터를 5분 단위로 그룹화
+      // 데이터를 3분 단위로 그룹화
       data.forEach(d => {
         const date = new Date(d.datetime);
-        const key = `${date.getHours()}:${Math.floor(date.getMinutes() / 5) * 5}`;
+        const key = `${date.getHours()}:${Math.floor(date.getMinutes() / 3) * 3}`;
 
         if (!groupedData[key]) {
           groupedData[key] = [];
@@ -131,7 +131,7 @@ export default withTooltip<Props, ChartData>(
         groupedData[key].push(d);
       });
 
-      // 각 5분 그룹에서 최고 온도 값 선택
+      // 각 3분 그룹에서 최고 온도 값 선택
       return Object.values(groupedData).map(group =>
         group.reduce(
           (currentMax, item) =>
