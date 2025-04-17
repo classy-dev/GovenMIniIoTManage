@@ -37,7 +37,7 @@ const StoreDetailTabs = ({ disabled = false }) => {
 
   const tabPaths = [
     { path: `/store-devices/${id}`, label: '상세 정보' },
-    { path: `/store-devices/${id}/setting`, label: '기기 설정' },
+    // { path: `/store-devices/${id}/setting`, label: '기기 설정' },
     { path: `/store-devices/${id}/history`, label: '변동 내역' },
   ];
 
