@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { AxisBottom, AxisLeft } from '@visx/axis';
+import { AxisBottom } from '@visx/axis';
 import { Group } from '@visx/group';
 import { useParentSize } from '@visx/responsive';
 import { scaleBand, scaleLinear } from '@visx/scale';
-import { Bar, Line } from '@visx/shape';
+import { Bar } from '@visx/shape';
 import { Text } from '@visx/text';
 import { descending, max, sort } from '@visx/vendor/d3-array';
 import dayjs from 'dayjs';
@@ -140,7 +140,7 @@ export const BarChart = ({
               dx: -1,
             }}
           />
-          <AxisLeft
+          {/* <AxisLeft
             scale={yScale}
             left={0}
             hideAxisLine
@@ -155,8 +155,8 @@ export const BarChart = ({
             tickValues={avg >= 1 ? [avg] : []}
             tickFormat={d => valueFormat(d as number)}
             tickLength={12}
-          />
-          <Line
+          /> */}
+          {/* <Line
             from={{
               x: 0,
               y: guideY,
@@ -169,7 +169,7 @@ export const BarChart = ({
             strokeWidth={1}
             strokeDasharray="4 4"
             pointerEvents="none"
-          />
+          /> */}
         </Group>
       </svg>
     </ResponsiveContainer>

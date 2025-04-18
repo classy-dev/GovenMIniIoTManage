@@ -24,7 +24,7 @@ const StoreInfo = ({ baseDate }: { baseDate: Dayjs }) => {
             </>
           }
           className="flex-none w-full md:flex-1"
-          sub={baseDate.format('YYYY.MM.DD')}
+          // sub={baseDate.format('YYYY.MM.DD')}
         >
           <BarChart
             className="w-full h-[30rem]"
