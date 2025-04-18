@@ -50,7 +50,7 @@ const StoreRankings = () => {
         loading={uptimeRateWithCountAscending.isLoading}
         storeData={uptimeRateWithCountAscending.data?.list ?? []}
       />
-      <StoreRanking
+      {/* <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
         title="전월대비 가동률 상위매장 TOP 3"
         loading={comparedMonthDesceding.isLoading}
@@ -61,7 +61,7 @@ const StoreRankings = () => {
         title="전월대비 가동률 하위매장 TOP 3"
         loading={comparedMonthAsceding.isLoading}
         storeData={comparedMonthAsceding.data?.list ?? []}
-      />
+      /> */}
     </div>
   );
 };
