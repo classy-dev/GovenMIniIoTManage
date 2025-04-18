@@ -27,7 +27,7 @@ const StoreInfo = ({ baseDate }: { baseDate: Dayjs }) => {
           sub={baseDate.format('YYYY.MM.DD')}
         >
           <BarChart
-            className="w-full"
+            className="w-full h-[30rem]"
             valueFormat={val => `${val}개`}
             data={(storeListCount.data?.graph ?? []).map(d => ({
               date: d.date,
@@ -36,7 +36,7 @@ const StoreInfo = ({ baseDate }: { baseDate: Dayjs }) => {
           />
         </Card>
       )}
-      {storeListTime.isLoading ? (
+      {/* {storeListTime.isLoading ? (
         <SkeletonBarChart className="flex-none w-full md:flex-1" />
       ) : (
         <Card
@@ -58,7 +58,7 @@ const StoreInfo = ({ baseDate }: { baseDate: Dayjs }) => {
             }))}
           />
         </Card>
-      )}
+      )} */}
     </div>
   );
 };
