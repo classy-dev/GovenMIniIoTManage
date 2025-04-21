@@ -160,7 +160,7 @@ export default withTooltip<Props, ChartData>(
       let lastValidTemp = 0;
       let lastPowerStatus = null; // "ON", "OFF", 또는 null을 저장
       let zeroCounter = 0;
-      const MAX_ZERO_COUNT = 60; // 3분 단위로 60개 = 3시간
+      const MAX_ZERO_COUNT = 20; // 3분 단위로 20개 = 1시간
 
       // 현재 상태와 마지막 상태 변경 시점 추적을 위한 변수
       let currentState = 'inactive';
@@ -184,11 +184,11 @@ export default withTooltip<Props, ChartData>(
         } else if (current.temp === 0) {
           // 온도가 0이고 전원이 꺼져있지 않은 경우 처리
           zeroCounter += 1;
-          // 3시간 이내의 0값은 이전 값 유지 (전원이 OFF가 아닌 경우에만)
+          // 1시간 이내의 0값은 이전 값 유지 (전원이 OFF가 아닌 경우에만)
           if (zeroCounter <= MAX_ZERO_COUNT && lastValidTemp > 0) {
             processedTemp = lastValidTemp;
           } else {
-            // 3시간 초과면 0으로 표시
+            // 1시간 초과면 0으로 표시
             processedTemp = 0;
           }
         } else {
