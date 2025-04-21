@@ -13,7 +13,7 @@ const StoreInfo = ({ baseDate }: { baseDate: Dayjs }) => {
 
   /** 일자별 매장 수 & 평균 가동 시간 */
   return (
-    <div className="flex gap-[0.8rem] text-[1.4rem] flex-wrap">
+    <div className="overflow-hidden flex gap-[0.8rem] text-[1.4rem] flex-wrap">
       {storeListCount.isLoading ? (
         <SkeletonBarChart className="flex-none w-full md:flex-1" />
       ) : (

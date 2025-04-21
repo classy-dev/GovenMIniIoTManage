@@ -50,7 +50,7 @@ const StoreRanking = ({
                 <span className="inline-flex min-w-[15rem]">
                   {data.store_name}
                 </span>
-                <span
+                {/* <span
                   className={`ml-[2.4rem] font-bold ${
                     rankValue === 0
                       ? 'text-[#8E8E8E]'
@@ -60,7 +60,7 @@ const StoreRanking = ({
                   }`}
                 >
                   {rankValue <= 0 ? rankValue : `+${rankValue}`}%
-                </span>
+                </span> */}
               </div>
               <img src="/arrow_right.png" className="w-[1.6rem] h-[1.6rem]" />
             </div>

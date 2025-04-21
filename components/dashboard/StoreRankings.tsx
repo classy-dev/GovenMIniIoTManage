@@ -40,13 +40,13 @@ const StoreRankings = () => {
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-        title="7일간 가동률+조리횟수 상위매장 TOP 3"
+        title="7일간 조리횟수 상위매장 TOP 3"
         loading={uptimeRateWithCountDescending.isLoading}
         storeData={uptimeRateWithCountDescending.data?.list ?? []}
       />
       <StoreRanking
         className="basis-full md:basis-[calc(50%_-_0.4rem)]"
-        title="7일간 가동률+조리횟수 하위매장 TOP 3"
+        title="7일간 조리횟수 하위매장 TOP 3"
         loading={uptimeRateWithCountAscending.isLoading}
         storeData={uptimeRateWithCountAscending.data?.list ?? []}
       />
