@@ -15,44 +15,9 @@ const BasicInfo = () => {
         <Card className="relative w-full basis-full md:basis-[23rem] min-h-[12rem]">
           <TodayWeather />
         </Card>
-        {/** 운영률 키드 */}
-        <Card className="relative w-full flex-1 md:basis-[21%] basis-full ">
-          <div className="w-full flex-1 flex justify-between">
-            <div className="total-count">
-              <p className="title !leading-tight">
-                현재 운영률 및 <br />총 대수
-              </p>
-              <p className="total">
-                <span className="count">{data?.store_total}</span> 대
-              </p>
-              <p className="updatedAt" />
-            </div>
-            <div className="inline-flex relative aspect-square w-[12.2rem] md:w-[16rem] ml-[5.2rem]">
-              <PieChart
-                className="absolute w-full h-full left-0 top-0"
-                margin={{
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }}
-                data={[
-                  {
-                    label: 'on',
-                    value: data?.store_in_operation_rate ?? 0,
-                  },
-                  {
-                    label: 'off',
-                    value: 100 - (data?.store_in_operation_rate ?? 0),
-                  },
-                ]}
-              />
-            </div>
-          </div>
-        </Card>
         {/** 운영중인 고븐미니 카드 */}
         <Card
-          className="basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex flex-col !bg-[#FA4616] text-white leading-tight text-left"
+          className="flex justify-center items-center flex-1 basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex flex-col !bg-[#FA4616] text-white leading-tight text-left"
           href="/store-devices?p=ON"
         >
           <div className="w-full flex flex-col items-center justify-center">
@@ -80,7 +45,7 @@ const BasicInfo = () => {
         {/** 미 운영중인 고븐미니 카드 */}
         <Card
           href="/store-devices?p=OFF"
-          className="basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex !flex-col !bg-[#171C8F] text-white leading-tight text-left"
+          className="flex justify-center items-center flex-1 basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex !flex-col !bg-[#171C8F] text-white leading-tight text-left"
         >
           <div className="w-full flex flex-col items-center justify-center">
             <div className="relative inline-flex opacity-65">
@@ -100,6 +65,33 @@ const BasicInfo = () => {
               >
                 <CircleArrow />
               </button>
+            </div>
+          </div>
+        </Card>
+        {/** 운영률 키드 */}
+        <Card className="relative w-full flex-[0.5] md:basis-[21%] basis-full ">
+          <div className="w-full flex-1 relative">
+            <p className=" title !leading-tight">현재 운영률</p>
+            <div className="inline-flex relative aspect-square w-[12.2rem] md:w-[16rem]">
+              <PieChart
+                className="absolute w-full h-full left-0 top-0"
+                margin={{
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+                data={[
+                  {
+                    label: 'on',
+                    value: data?.store_in_operation_rate ?? 0,
+                  },
+                  {
+                    label: 'off',
+                    value: 100 - (data?.store_in_operation_rate ?? 0),
+                  },
+                ]}
+              />
             </div>
           </div>
         </Card>
