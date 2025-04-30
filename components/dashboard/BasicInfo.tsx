@@ -17,7 +17,7 @@ const BasicInfo = () => {
         </Card>
         {/** 운영중인 고븐미니 카드 */}
         <Card
-          className="flex justify-center items-center flex-1 basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex flex-col !bg-[#FA4616] text-white leading-tight text-left"
+          className="flex justify-center items-center flex-1 basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex-col !bg-[#FA4616] text-white leading-tight text-left"
           href="/store-devices?p=ON"
         >
           <div className="w-full flex flex-col items-center justify-center">
@@ -45,7 +45,7 @@ const BasicInfo = () => {
         {/** 미 운영중인 고븐미니 카드 */}
         <Card
           href="/store-devices?p=OFF"
-          className="flex justify-center items-center flex-1 basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full flex !flex-col !bg-[#171C8F] text-white leading-tight text-left"
+          className="flex justify-center items-center flex-1 basis-[calc(50%_-_0.4rem)] md:flex-1 md:w-full !flex-col !bg-[#171C8F] text-white leading-tight text-left"
         >
           <div className="w-full flex flex-col items-center justify-center">
             <div className="relative inline-flex opacity-65">
